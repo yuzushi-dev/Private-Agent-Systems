@@ -30,4 +30,7 @@ keywords:
   - governance
   - Model Context Protocol
 repository-code: "https://github.com/yuzushi-dev/Private-Agent-Systems"
-# TODO: add identifiers (ASIN / ISBN) once the edition is published.
+identifiers:
+  - type: other
+    value: "ISBN: 9798199967976"
+    description: "Paperback ISBN"
