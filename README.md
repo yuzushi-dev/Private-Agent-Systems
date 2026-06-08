@@ -27,7 +27,7 @@ reviewed. Two first-party case studies, **Amber** (governable Hybrid GraphRAG) a
 the architecture in concrete systems.
 
 - **English edition (canonical):** *Private Agent Systems*: first edition
-- **Italian edition:** *Sistemi di agenti privati*
+- **Italian edition:** *Sistemi agentici privati*
 - **Where to buy:** <!-- TODO: add the Amazon/KDP purchase link and edition/ASIN -->
 
 *Daniele Verì builds private, observable AI systems, where cognitive science meets
