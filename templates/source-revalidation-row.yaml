@@ -1,0 +1,12 @@
+# Source revalidation row: template from "Private Agent Systems" (Appendix B).
+# One row per source you re-check after publication. Replace placeholders.
+source_revalidation:
+  source_name: ""
+  url: ""
+  owner: ""
+  checked_on: ""
+  checked_by: ""
+  used_for_claims: []
+  current_status: valid | changed | removed | unclear
+  source_action: keep | revise | remove | move_to_watchlist
+  notes: ""

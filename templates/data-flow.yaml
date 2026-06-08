@@ -1,0 +1,34 @@
+# Data flow template: from "Private Agent Systems" (Appendix B).
+# Replace placeholders with project-specific evidence.
+data_flow:
+  system_name: ""
+  purpose: ""
+  data_subjects: []
+  input_sources:
+    - source: ""
+      owner: ""
+      data_class: ""
+      legal_or_policy_basis: ""
+      retention: ""
+      allowed_routes: []
+  processing_steps:
+    - step: classify
+      stores_raw_input: false
+      trace_fields: []
+    - step: retrieve
+      stores_raw_source: false
+      trace_fields: []
+    - step: model_call
+      provider_route: ""
+      trace_fields: []
+    - step: tool_call
+      side_effect: ""
+      approval_required: true
+  outputs:
+    user_visible: []
+    stored_artifacts: []
+    logs_and_traces: []
+  deletion_and_correction:
+    export_supported: false
+    correction_supported: false
+    deletion_supported: false

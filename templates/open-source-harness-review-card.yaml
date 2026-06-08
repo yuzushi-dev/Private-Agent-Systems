@@ -1,0 +1,39 @@
+# Open-source harness review card: template from "Private Agent Systems" (Appendix B).
+# Use when reviewing a fast-moving open-source agent project. The decision is not
+# limited to adopt or reject: many projects are best used as pattern references,
+# testbeds, or watchlist signals. Replace placeholders with project-specific evidence.
+open_source_harness_review:
+  project: ""
+  repository: ""
+  license: "unknown"
+  category: adopt | adapt | observe | avoid
+  primary_archetype:
+    - personal_gateway
+    - self_improving_agent
+    - agent_team_control_plane
+    - stateful_runtime
+    - coding_agent
+    - model_vendor_framework
+  execution_surface:
+    - terminal
+    - web_ui
+    - messaging_gateway
+    - ide
+    - local_service
+    - cloud_service
+  state_location: []
+  memory_model: ""
+  tool_admission_model: ""
+  plugin_or_skill_surface: ""
+  local_execution_risk: ""
+  credential_risk: ""
+  network_egress_policy: ""
+  sandbox_model: ""
+  trace_model: ""
+  evaluation_surface: ""
+  update_cadence: "unknown"
+  evidence_urls: []
+  security_notes: []
+  production_constraints: []
+  decision_owner: ""
+  review_date: ""

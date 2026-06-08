@@ -1,0 +1,42 @@
+# Local inference readiness card: template from "Private Agent Systems" (Appendix B).
+# Replace placeholders with project-specific evidence.
+local_inference_readiness:
+  route_id:
+  owner:
+  user_group:
+  hardware:
+    gpu:
+    vram:
+    system_ram:
+    storage:
+    network_boundary:
+  runtime:
+    engine:
+    serving_mode:
+    openai_compatible_endpoint:
+  model:
+    name:
+    release_year:
+    source:
+    license_review:
+    artifact_hash:
+    quantization:
+  context:
+    default_context_tokens:
+    maximum_context_tokens:
+    output_budget:
+    kv_cache_policy:
+  data_policy:
+    allowed_data_classes:
+    blocked_data_classes:
+    external_processing:
+    prompt_logging:
+  evaluation:
+    smoke_test_set:
+    latency_baseline:
+    memory_baseline:
+    quality_baseline:
+  release:
+    approval_status:
+    rollback_path:
+    next_review_date:

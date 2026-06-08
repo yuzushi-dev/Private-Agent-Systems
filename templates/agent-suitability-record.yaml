@@ -1,0 +1,21 @@
+# Agent suitability record: template from "Private Agent Systems" (Appendix B).
+# Replace placeholders with project-specific evidence.
+use_case: ""
+requesting_team: ""
+business_owner: ""
+technical_owner: ""
+privacy_owner: ""
+security_owner: ""
+agent_required: false
+why_a_workflow_is_not_enough: ""
+expected_users: []
+expected_frequency: ""
+source_systems: []
+data_classes: []
+model_routes: []
+tools: []
+approval_gates: []
+trace_fields: []
+retention_profile: ""
+launch_stop_conditions: []
+review_date: ""

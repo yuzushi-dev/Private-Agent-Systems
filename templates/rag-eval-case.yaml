@@ -1,0 +1,16 @@
+# RAG eval case: template from "Private Agent Systems" (Appendix B).
+# Replace placeholders with project-specific evidence.
+rag_eval_case:
+  case_id: ""
+  question: ""
+  expected_sources: []
+  forbidden_sources: []
+  expected_behavior: "answer_with_citations | insufficient_evidence | refuse"
+  freshness_requirement: ""
+  acl_requirement: ""
+  metrics:
+    context_precision: "track"
+    context_recall: "track"
+    faithfulness: "track"
+    unsupported_claims: "block_if_present"
+  human_review_required: false

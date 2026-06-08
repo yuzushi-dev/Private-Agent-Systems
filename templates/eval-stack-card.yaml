@@ -1,0 +1,32 @@
+# Eval stack card: template from "Private Agent Systems" (Appendix B).
+# The named tools are replaceable examples, not a prescribed stack. Swap them for
+# your team's approved tools and record the versions. Replace placeholders.
+eval_stack_card:
+  system_name: ""
+  release_id: ""
+  owners:
+    platform: ""
+    security: ""
+    privacy: ""
+    source_owner: ""
+  tools:
+    retrieval_grounding: "ragas"
+    prompt_route_regression: "promptfoo"
+    agent_tool_execution: "inspect_ai"
+    trace_linked_review: "langfuse"
+  datasets:
+    retrieval_cases: ""
+    prompt_regression_cases: ""
+    tool_execution_cases: ""
+    privacy_route_cases: ""
+    incident_regression_cases: ""
+  judge_policy:
+    llm_as_judge_allowed: true
+    judge_route: ""
+    human_review_sampling: ""
+    high_risk_human_review_required: true
+  release_gate:
+    block_on_retrieval_regression: true
+    block_on_tool_safety_regression: true
+    block_on_privacy_route_failure: true
+    block_on_unreviewed_high_risk_exception: true

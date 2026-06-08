@@ -1,0 +1,25 @@
+# Provider review sheet: template from "Private Agent Systems" (Appendix B).
+# Replace placeholders with project-specific evidence.
+provider_review:
+  provider: ""
+  product_or_endpoint: ""
+  plan_or_contract: ""
+  data_used_for_training_by_default: "unknown"
+  customer_owns_input_output: "unknown"
+  dpa_available: "unknown"
+  controller_processor_mapping: ""
+  retention_default: ""
+  admin_retention_control: ""
+  zero_retention_path: ""
+  feature_exceptions:
+    grounding: ""
+    connectors: ""
+    browser_or_search: ""
+    memory: ""
+    session_resume: ""
+    cache: ""
+  approved_data_classes: []
+  denied_data_classes: []
+  evidence_urls: []
+  reviewer: ""
+  decision: pending

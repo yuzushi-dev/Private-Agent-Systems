@@ -1,0 +1,22 @@
+# Context budget worksheet: template from "Private Agent Systems" (Appendix B).
+# Replace placeholders with project-specific evidence.
+context_budget:
+  route_id:
+  maximum_context_tokens:
+  reserved_output_tokens:
+  system_policy_tokens:
+  developer_instruction_tokens:
+  tool_schema_tokens:
+  conversation_summary_tokens:
+  retrieved_context_tokens:
+  user_input_tokens:
+  safety_margin_tokens:
+  packing_rules:
+    - cap_per_source
+    - prefer_current_sources
+    - exclude_disputed_sources
+    - summarize_sensitive_sources_when_allowed
+  failure_policy:
+    if_budget_exceeded:
+    if_required_source_missing:
+    if_retrieved_context_contains_sensitive_data:

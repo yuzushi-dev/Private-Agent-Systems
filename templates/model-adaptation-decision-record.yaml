@@ -1,0 +1,30 @@
+# Model adaptation decision record: template from "Private Agent Systems" (Appendix B).
+# Replace placeholders with project-specific evidence.
+model_adaptation_decision:
+  problem_statement:
+  current_failure_mode:
+  tried_before_training:
+    prompt_change:
+    retrieval_change:
+    context_packing_change:
+    route_change:
+    schema_or_tool_change:
+  adaptation_option:
+    selected: prompt_only | rag | lora | qlora | full_fine_tune | continual_pretraining
+    reason:
+  dataset:
+    source:
+    consent_status:
+    data_classes:
+    license_status:
+    redaction_status:
+  evaluation:
+    baseline_model:
+    adapted_model:
+    task_metrics:
+    regression_tests:
+    human_review:
+  deployment:
+    artifact_owner:
+    rollback_path:
+    release_gate:

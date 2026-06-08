@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+title: "Private Agent Systems"
+message: "If you reference this book or its supplemental resources, please cite the book."
+type: book
+authors:
+  - family-names: "Verì"
+    given-names: "Daniele"
+abstract: >-
+  Private Agent Systems is a manual for designing private, observable, and
+  governed AI agent systems. It treats agents as production software, the
+  harness around the model: identity, data classification, retrieval, model
+  routing, tool permissions, memory, observability, evaluation, privacy
+  controls, and operational ownership, and turns privacy, consent, security,
+  tool governance, and rollout into runtime decisions that can be inspected and
+  reviewed. Two first-party case studies, Amber (governable Hybrid GraphRAG) and
+  Relic (runtime governance, provenance, consent, and memory control), ground
+  the architecture in concrete systems.
+edition: "First edition"
+year: 2026
+languages:
+  - en
+  - it
+keywords:
+  - AI agents
+  - LLM
+  - GraphRAG
+  - retrieval-augmented generation
+  - observability
+  - privacy
+  - governance
+  - Model Context Protocol
+repository-code: "https://github.com/yuzushi-dev/Private-Agent-Systems"
+# TODO: add identifiers (ASIN / ISBN) once the edition is published.

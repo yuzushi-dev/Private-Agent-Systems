@@ -1,0 +1,23 @@
+# Route card: template from "Private Agent Systems" (Appendix B).
+# Replace placeholders with project-specific evidence.
+route_card:
+  route_id: ""
+  owner: ""
+  provider_or_runtime: ""
+  model_or_endpoint: ""
+  approved_data_classes: []
+  denied_data_classes: []
+  allowed_purposes: []
+  denied_purposes: []
+  retention_profile: ""
+  telemetry_profile: ""
+  feature_exceptions:
+    search_grounding: false
+    browser_access: false
+    connectors: []
+    memory: false
+    session_resume: false
+    caching: ""
+  eval_dataset: ""
+  rollback_route: ""
+  revalidation_date: ""

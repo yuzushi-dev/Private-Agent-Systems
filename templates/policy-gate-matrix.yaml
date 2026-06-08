@@ -1,0 +1,20 @@
+# Policy gate matrix: template from "Private Agent Systems" (Appendix B).
+# Replace placeholders with project-specific evidence.
+policy_gate:
+  gate_id: ""
+  location: pre_model | post_model | pre_tool | post_tool | pre_retrieval | post_retrieval
+  input_fields: []
+  decision_values:
+    - allow
+    - block
+    - ask_for_approval
+    - reroute
+    - redact
+    - dry_run
+  default_decision: block
+  records:
+    - decision
+    - reason_code
+    - policy_version
+    - actor
+    - timestamp

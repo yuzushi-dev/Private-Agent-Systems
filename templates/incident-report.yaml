@@ -1,0 +1,24 @@
+# Incident report: template from "Private Agent Systems" (Appendix B).
+# Replace placeholders with project-specific evidence.
+incident:
+  incident_id: ""
+  detected_at: ""
+  detected_by: user | monitoring | eval | operator | audit
+  affected_routes: []
+  affected_data_classes: []
+  affected_tools: []
+  immediate_action:
+    kill_switch_used: false
+    route_disabled: []
+    source_disabled: []
+    tool_disabled: []
+  run_records: []
+  suspected_failure_mode: ""
+  user_impact: ""
+  data_impact: ""
+  root_cause: ""
+  fix: ""
+  regression_test_added: false
+  policy_update_required: false
+  owner: ""
+  postmortem_date: ""

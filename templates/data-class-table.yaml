@@ -1,0 +1,24 @@
+# Data class table: template from "Private Agent Systems" (Appendix B).
+# Replace placeholders with project-specific evidence.
+data_classes:
+  - class: public
+    examples: []
+    allowed_routes: []
+    default_retention: ""
+  - class: internal
+    examples: []
+    allowed_routes: []
+    default_retention: ""
+  - class: confidential
+    examples: []
+    allowed_routes: []
+    default_retention: ""
+  - class: restricted
+    examples: []
+    allowed_routes: []
+    default_retention: ""
+  - class: personal_data
+    examples: []
+    allowed_routes: []
+    default_retention: ""
+    review_required: true

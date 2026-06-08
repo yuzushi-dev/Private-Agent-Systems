@@ -1,0 +1,20 @@
+# Eval packet: template from "Private Agent Systems" (Appendix B).
+# Replace placeholders with project-specific evidence.
+eval_packet:
+  release: ""
+  dataset_version: ""
+  task_classes: []
+  data_classes: []
+  model_routes: []
+  retrieval_profiles: []
+  metrics:
+    grounded_answer_rate: ""
+    citation_support_rate: ""
+    unsupported_refusal_rate: ""
+    tool_call_accuracy: ""
+    policy_gate_accuracy: ""
+    latency_p95: ""
+    cost_per_successful_task: ""
+  failures_reviewed: []
+  launch_blockers: []
+  decision: pending

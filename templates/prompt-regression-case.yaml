@@ -1,0 +1,12 @@
+# Prompt regression case: template from "Private Agent Systems" (Appendix B).
+# Replace placeholders with project-specific evidence.
+prompt_regression_case:
+  case_id: ""
+  prompt_version: ""
+  route_under_test: ""
+  input: ""
+  expected_output_properties: []
+  forbidden_output_properties: []
+  attack_variant: "none | direct_injection | indirect_injection | jailbreak"
+  providers_to_compare: []
+  pass_conditions: []

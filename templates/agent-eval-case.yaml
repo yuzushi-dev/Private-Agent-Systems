@@ -1,0 +1,17 @@
+# Agent eval case: template from "Private Agent Systems" (Appendix B).
+# Replace placeholders with project-specific evidence.
+agent_eval_case:
+  case_id: ""
+  user_goal: ""
+  data_class: ""
+  expected_route: ""
+  expected_tools: []
+  forbidden_tools: []
+  approval_expected: "none | required | blocked"
+  initial_state: {}
+  expected_final_state: {}
+  forbidden_state_changes: []
+  sandbox_required: true
+  expected_trace_events: []
+  pass_conditions: []
+  fail_conditions: []
