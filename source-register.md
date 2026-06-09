@@ -26,7 +26,7 @@ source_register:
       status: development
       action: treat_as_snapshot_not_stable_standard
     - claim_area: openai_agents_docs
-      source: https://platform.openai.com/docs/guides/agents
+      source: https://developers.openai.com/api/docs/guides/agents
       action: match_current_agentkit_wording
     - claim_area: openai_business_api_data
       source: https://openai.com/policies/api-data-usage-policies/
