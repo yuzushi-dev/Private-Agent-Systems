@@ -72,6 +72,48 @@ When a source changes, add a dated entry below rather than editing the snapshot
 above. Keep the original snapshot intact so readers can see what was true at the
 edition date.
 
+### 2026-06-22 governed LLM Wiki chapter
+
+The following sources support the supplemental chapter
+[`Building a Governed LLM Wiki as a Second Brain`](chapters/building-a-governed-llm-wiki.md).
+
+```yaml
+supplemental_chapter_register:
+  chapter: building_a_governed_llm_wiki
+  checked_on: "2026-06-22"
+  rows:
+    - claim_area: llm_wiki_pattern
+      source: https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f
+      action: treat_as_an_architectural_pattern_not_an_evaluated_product
+    - claim_area: claude_code_memory_and_mcp
+      sources:
+        - https://code.claude.com/docs/en/memory
+        - https://code.claude.com/docs/en/mcp
+        - https://code.claude.com/docs/en/permissions
+      action: keep_instruction_discovery_and_mcp_scope_commands_dated
+    - claim_area: codex_agents_md_and_mcp
+      sources:
+        - https://developers.openai.com/codex/guides/agents-md
+        - https://developers.openai.com/codex/mcp
+      action: keep_instruction_discovery_limits_and_mcp_commands_dated
+    - claim_area: mcp_filesystem_boundary
+      sources:
+        - https://modelcontextprotocol.io/docs/concepts/roots
+        - https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem
+      action: distinguish_declared_roots_from_os_permissions_and_sandboxing
+    - claim_area: obsidian_markdown_interface
+      sources:
+        - https://help.obsidian.md/links
+        - https://help.obsidian.md/properties
+        - https://help.obsidian.md/plugins/graph
+      action: treat_obsidian_as_optional_interface_over_canonical_markdown
+    - claim_area: long_context_and_memory_tiers
+      sources:
+        - https://arxiv.org/abs/2307.03172
+        - https://arxiv.org/abs/2310.08560
+      action: support_bounded_context_and_memory_tiers_without_claiming_llm_wiki_superiority
+```
+
 <!-- Example:
 ### 2026-XX-XX owasp_llm_top_10
 Source moved / version changed. New link: ... . Impact on the book: ... .
