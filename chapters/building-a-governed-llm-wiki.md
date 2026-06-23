@@ -120,11 +120,20 @@ second-brain/
 ├── CLAUDE.md
 ├── AGENTS.md
 ├── 00-index.md
+├── .claude/
+│   └── settings.json
+├── .codex/
+│   └── config.toml
 ├── 00-system/
 │   ├── llm-wiki-spec.md
 │   └── memory-schema.md
 ├── inbox/
+├── source-staging/
 ├── sources/
+│   └── <source-id>/
+│       ├── original.<ext>
+│       └── source.md
+├── processed/
 ├── wiki/
 │   └── _wiki-index.md
 ├── _queries/
@@ -135,10 +144,13 @@ second-brain/
 └── 90-archive/
 ```
 
-`inbox/` is a queue, not a permanent store. `sources/` preserves processed
-inputs. `wiki/` holds durable synthesis. `_queries/` records which questions
-caused the wiki to grow. The numbered operational directories keep project
-work separate from knowledge and sort them into a stable order.
+`inbox/` is a queue, not a permanent store. Agents prepare source packages in
+`source-staging/`. A human promotes approved packages to read-only `sources/`,
+which preserves originals and provenance sidecars. `processed/` retains
+reviewed inbox items after ingest because the official filesystem MCP server
+has no delete tool. `wiki/` holds durable synthesis. `_queries/` records which
+questions caused the wiki to grow. The numbered operational directories keep
+project work separate from knowledge and sort them into a stable order.
 
 The layout should stay small until use demands more structure. Taxonomies built
 before real questions tend to encode guesses. Start with a few sources and
@@ -150,18 +162,51 @@ a measurable problem.
 Create the root and its directories before configuring either agent:
 
 ```bash
-mkdir -p ~/second-brain/{00-system,inbox,sources,wiki,_queries}
+mkdir -p ~/second-brain/{00-system,inbox,source-staging,sources,processed,wiki,_queries}
 mkdir -p ~/second-brain/{10-projects,20-decisions,30-runbooks,40-daily,90-archive}
 cd ~/second-brain
+touch inbox/.gitkeep source-staging/.gitkeep sources/.gitkeep processed/.gitkeep _queries/.gitkeep
+touch 10-projects/.gitkeep 20-decisions/.gitkeep 30-runbooks/.gitkeep
+touch 40-daily/.gitkeep 90-archive/.gitkeep
 git init
 ```
 
 An LLM Wiki can run without Git. Version history supplies a practical audit and
 rollback path. Make the first commit after adding the operating
-specification and empty structure. If the vault contains personal or
+specification and tracked placeholder files. If the vault contains personal or
 confidential material, keep the repository local or use a private remote whose
 access and retention fit the data class. A public Git host is not a backup plan
 for private notes.
+
+Check Git identity before the first commit:
+
+```bash
+git config --get user.name
+git config --get user.email
+```
+
+If either command returns no value, set a real repository-local identity with
+`git config user.name` and `git config user.email`. A fresh Git installation
+will reject the commit without it.
+
+PowerShell uses different filesystem commands:
+
+```powershell
+$vault = Join-Path $HOME "second-brain"
+$dirs = @(
+  "00-system", "inbox", "source-staging", "sources", "processed", "wiki", "_queries",
+  "10-projects", "20-decisions", "30-runbooks", "40-daily", "90-archive"
+)
+New-Item -ItemType Directory -Force -Path $vault | Out-Null
+$dirs | ForEach-Object {
+  New-Item -ItemType Directory -Force -Path (Join-Path $vault $_) | Out-Null
+}
+Set-Location $vault
+git init
+```
+
+Git does not preserve empty directories, so add a small README or `.gitkeep`
+file to each empty directory before the first commit on either platform.
 
 Add a `.gitignore` that excludes application state, temporary files, and local
 secrets:
@@ -229,12 +274,16 @@ Synthesize knowledge once, then update it as sources and questions add evidence.
 ## Ingest
 
 1. Read one item from `inbox/`.
-2. Save the original or a faithful capture in
-   `sources/YYYY-MM-DD-source-slug.md`.
-3. Search `wiki/` for existing pages that cover its claims.
-4. Update those pages or create a focused concept page.
-5. Link every material claim to a source entry.
-6. Remove the inbox item after the source and wiki writes pass review.
+2. Save the original bytes and provenance sidecar under
+   `source-staging/<source-id>/`, or record why only a link and summary may be
+   stored.
+3. Record a SHA-256 hash and source version.
+4. Search `wiki/` for existing pages that cover its claims.
+5. Update those pages or create a focused concept page.
+6. Link every material claim to a source entry and exact locator.
+7. Stage and review the complete Git transaction.
+8. After review, let a human promote the source package to read-only `sources/`,
+   move the inbox item to `processed/`, and commit the transaction.
 
 ## Query
 
@@ -246,10 +295,10 @@ Synthesize knowledge once, then update it as sources and questions add evidence.
 
 ## Boundaries
 
-Keep project state in the operational directories. Do not store credentials,
-tokens, cookies, private keys, or unnecessary personal data. Mark uncertain
-claims and date facts that can expire. Update existing concepts instead of
-creating duplicates.
+Keep project state in the operational directories. Keep client-generated
+memory disabled for vault work. Do not store credentials, tokens, cookies,
+private keys, or unnecessary personal data. Mark uncertain claims and date
+facts that can expire. Update existing concepts instead of creating duplicates.
 ```
 
 The starter specification adds frontmatter, conflict handling, correction
@@ -258,27 +307,57 @@ to apply while working.
 
 ## Give sources and concepts different schemas
 
-A source file records provenance. A wiki page records synthesis. Do not use one
-frontmatter schema for both.
+A source directory preserves evidence. Its sidecar records provenance, while a
+wiki page records synthesis. Do not use one frontmatter schema for both.
+
+Assign a collision-resistant ID such as
+`2026-06-22-example-source-a1b2c3d4` and prepare:
+
+```text
+source-staging/2026-06-22-example-source-a1b2c3d4/
+├── original.pdf
+└── source.md
+```
+
+The original keeps its native format. The sidecar uses this schema:
 
 ```yaml
 ---
 type: source
-captured: 2026-06-22
+source_id: 2026-06-22-example-source-a1b2c3d4
+capture_kind: original
 url: https://example.com/
 author: Example Author
 title: Example Source
-license_or_capture_basis: link_and_summary
-checked: 2026-06-22
+published_or_version: "1.0"
+retrieved_at: 2026-06-22T12:00:00Z
+original_filename: original.pdf
+media_type: application/pdf
+sha256: "<sha256-of-original-bytes>"
+license_or_capture_basis: original
+derived_by: human_or_agent_identifier
 tags:
   - source
 ---
 ```
 
-The body can contain a faithful capture when you have the right to store it, or
-a summary with selected short quotations. Preserve the URL and capture date in
-both cases. A link can disappear, while a copied article can violate licensing
-or distribution terms. The capture policy needs to address both risks.
+Use `sha256sum original.pdf` on Linux, `shasum -a 256 original.pdf` on macOS,
+or `Get-FileHash .\original.pdf -Algorithm SHA256` in PowerShell. A URL-only
+capture uses `capture_kind: link_and_summary` and explains why no original was
+stored. The body separates captured facts, operator notes, and agent-generated
+summary. Preserve the URL, retrieval timestamp, publication or source version,
+original filename, media type, and license basis. A link can disappear, while
+a copied article can violate licensing or distribution terms. The capture
+policy needs to address both risks.
+
+Claim-level provenance belongs beside the claim. Use page numbers, section
+headings, timestamps, table names, record keys, or another locator supported by
+the source. A source list at the bottom of a page cannot resolve a conflict
+between two claims on its own.
+
+After review, a human operator moves the complete package into `sources/` and
+makes it read-only for the agent identity. The agent writes new candidates to
+`source-staging/`; it never needs write permission on approved evidence.
 
 A concept page uses a different schema:
 
@@ -291,7 +370,7 @@ status: reviewed
 tags:
   - wiki
 sources:
-  - "[[sources/2026-06-22-example-source]]"
+  - "[[sources/2026-06-22-example-source-a1b2c3d4/source]]"
 ---
 ```
 
@@ -319,7 +398,9 @@ reserve.
 
 ## Sources
 
-[[sources/2026-06-22-example-source]]
+Claim text. [example-source-a1b2c3d4, page 12]
+
+[[sources/2026-06-22-example-source-a1b2c3d4/source]]
 ```
 
 Obsidian understands `[[wikilinks]]`, and plain-text tools can still search
@@ -329,6 +410,34 @@ they allow links to unwritten concepts. Such links act as visible research
 prompts.
 
 ## Wire Claude Code from the vault root
+
+Disable generated client memory before opening sensitive sources. Claude auto
+memory is enabled by default and writes outside the vault under `~/.claude`.
+Add `.claude/settings.json`:
+
+```json
+{
+  "autoMemoryEnabled": false
+}
+```
+
+Codex memories are off by default, but an existing user profile may have
+enabled them. Add `.codex/config.toml`:
+
+```toml
+[features]
+memories = false
+
+[memories]
+generate_memories = false
+use_memories = false
+disable_on_external_context = true
+```
+
+These project settings require workspace trust. Check `/memory` in Claude Code
+and `/memories` in Codex before ingest. Audit existing generated memory when the
+client profile has already processed vault material. Generated memory sits
+outside Git review and can retain source text or injected instructions.
 
 The shortest setup starts Claude Code inside the vault:
 
@@ -348,10 +457,12 @@ small project entry file at the vault root:
 Read `00-system/llm-wiki-spec.md` before ingesting, querying, or editing this
 vault. Follow `00-system/memory-schema.md` for operational notes.
 
-Core loop: `inbox/` -> `sources/` -> `wiki/` -> clear the processed inbox item.
-Search `wiki/` first for queries and record each question in `_queries/`.
+Core loop: `inbox/` -> `source-staging/` -> human promotion to `sources/` ->
+`wiki/` -> `processed/`. Move reviewed inbox items; do not delete them during
+ingest. Search `wiki/` first for queries and record each question in `_queries/`.
 
-Do not store secrets or unnecessary personal data.
+Do not store secrets or unnecessary personal data. Keep generated memory
+disabled for vault sessions.
 ```
 
 Run `/memory` inside Claude Code to inspect the loaded instruction files. Ask
@@ -370,7 +481,7 @@ when you want instruction files from added directories to load:
 
 ```bash
 CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 \
-  claude --add-dir ~/second-brain
+  claude --permission-mode plan --add-dir ~/second-brain
 ```
 
 This behavior can change. Verify the current Claude Code memory and permissions
@@ -394,10 +505,12 @@ Place the equivalent entry file in `AGENTS.md`:
 Read `00-system/llm-wiki-spec.md` before ingesting, querying, or editing this
 vault. Follow `00-system/memory-schema.md` for operational notes.
 
-Core loop: `inbox/` -> `sources/` -> `wiki/` -> clear the processed inbox item.
-Search `wiki/` first for queries and record each question in `_queries/`.
+Core loop: `inbox/` -> `source-staging/` -> human promotion to `sources/` ->
+`wiki/` -> `processed/`. Move reviewed inbox items; do not delete them during
+ingest. Search `wiki/` first for queries and record each question in `_queries/`.
 
-Do not store secrets or unnecessary personal data.
+Do not store secrets or unnecessary personal data. Keep generated memory
+disabled for vault sessions.
 ```
 
 Codex discovers guidance from its home directory and then from the project root
@@ -410,77 +523,114 @@ the agent to read the canonical contract before vault work.
 Verify discovery with a read-only prompt:
 
 ```bash
-codex --ask-for-approval never "Summarize the active second-brain instructions without editing files."
+codex --sandbox read-only --ask-for-approval never exec --ephemeral \
+  "Summarize the active second-brain instructions without editing files."
 ```
+
+`--ask-for-approval never` controls prompts, not filesystem authority. The
+`read-only` sandbox supplies the boundary for this probe. Disable writable MCP
+servers during the test because their tools can sit outside the local
+filesystem sandbox.
 
 The command and option names reflect the Codex documentation checked on June
 22, 2026. Run `codex --help` on your installed version when an option differs.
 
-## Connect both agents through filesystem MCP
+## Cross-repository access: prefer additional directories
 
-Starting inside the vault works for dedicated knowledge sessions. A developer
-may need the second brain while working in another repository. A filesystem
-MCP server gives the agent tools to list, read, search, and modify files under
-an allowed directory.
+Starting inside the vault gives both clients the clearest instruction and
+filesystem boundary. When another repository needs vault context, prefer an
+explicit additional directory over a general filesystem MCP server.
 
-Install Node.js and ensure `npx` is available. Claude Code can register the
-official filesystem server at user scope:
+Claude Code can load the vault and its instruction files on Linux or macOS:
+
+```bash
+CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1 \
+  claude --add-dir ~/second-brain
+```
+
+PowerShell uses an environment assignment that persists for the process:
+
+```powershell
+$env:CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD = "1"
+claude --permission-mode plan --add-dir "$HOME\second-brain"
+```
+
+Plan mode fits cross-repository queries, but it is not an OS sandbox. Run vault
+writes from a dedicated vault-root session under the intended filesystem
+identity.
+
+Codex can add the directory too:
+
+```bash
+codex --sandbox read-only --add-dir ~/second-brain
+```
+
+Codex does not document instruction discovery from `--add-dir`. Require the
+session to read the vault's `AGENTS.md` and canonical specification before any
+vault operation. In `workspace-write` mode, Codex treats an added directory as
+writable. Use the read-only command for cross-repository queries and perform
+vault writes in a dedicated vault-root session. A concise bridge in
+`~/.codex/AGENTS.md` can record that procedure. Treat the bridge as guidance,
+not an access control.
+
+## Advanced route: filesystem MCP
+
+The official filesystem MCP server is a broad read/write tool. Current source
+code replaces command-line allowed directories with valid roots advertised by
+the client during initialization and after `roots/list_changed`. Claude Code
+documents that its MCP roots identify the directory where Claude was launched.
+A server launched with `/second-brain` can therefore switch to the active code
+repository. The command-line path alone does not enforce the vault boundary.
+
+Use this route only inside a dedicated OS account, container, or sandbox that
+cannot access sibling repositories or user credentials. Pin the reviewed server
+release instead of executing a moving package:
 
 ```bash
 claude mcp add --transport stdio --scope user obsidian-files -- \
-  npx -y @modelcontextprotocol/server-filesystem /absolute/path/to/second-brain
-```
+  npx -y @modelcontextprotocol/server-filesystem@2026.1.14 \
+  /absolute/path/to/second-brain
 
-Check it from the shell and from an active session:
-
-```bash
-claude mcp list
-```
-
-```text
-/mcp
-```
-
-Codex can register the same server in its user configuration:
-
-```bash
 codex mcp add obsidian-files -- \
-  npx -y @modelcontextprotocol/server-filesystem /absolute/path/to/second-brain
+  npx -y @modelcontextprotocol/server-filesystem@2026.1.14 \
+  /absolute/path/to/second-brain
 ```
 
-Verify the result:
+The version above is the release reviewed for this chapter. Record its npm
+integrity value, Node version, client version, and reviewed Git commit in the
+deployment source register. Re-review before changing any of them.
 
-```bash
-codex mcp list
-```
-
-Codex stores MCP configuration in `~/.codex/config.toml`. The equivalent manual
-configuration is:
+Codex stores MCP configuration in `~/.codex/config.toml`. On Windows, launch
+`npx` through `cmd /c` and escape the path:
 
 ```toml
 [mcp_servers.obsidian-files]
-command = "npx"
+command = "cmd"
 args = [
+  "/c",
+  "npx",
   "-y",
-  "@modelcontextprotocol/server-filesystem",
-  "/absolute/path/to/second-brain"
+  "@modelcontextprotocol/server-filesystem@2026.1.14",
+  "C:\\Users\\you\\second-brain"
 ]
 ```
 
-Claude Code user-scoped MCP entries live in its user configuration. Teams can
-also use a project-scoped `.mcp.json`, but an absolute personal path does not
-belong in a shared repository. Claude Code supports environment expansion in
-project MCP configuration, so a team can use a variable:
+Claude Code accepts local, project, and user MCP scopes. Local scope has
+precedence over project scope, which has precedence over user scope. A project
+`.mcp.json` requires approval before Claude uses it. Team configuration can use
+an environment variable, but an unset variable causes parsing to fail:
 
 ```json
 {
   "mcpServers": {
-    "second-brain": {
+    "obsidian-files": {
       "type": "stdio",
-      "command": "npx",
+      "command": "cmd",
       "args": [
+        "/c",
+        "npx",
         "-y",
-        "@modelcontextprotocol/server-filesystem",
+        "@modelcontextprotocol/server-filesystem@2026.1.14",
         "${SECOND_BRAIN_PATH}"
       ]
     }
@@ -488,56 +638,28 @@ project MCP configuration, so a team can use a variable:
 }
 ```
 
-Each user then sets `SECOND_BRAIN_PATH` outside version control.
+On Linux and macOS, set `command` to `npx` and remove `"/c", "npx"` from the
+argument list. Persist `SECOND_BRAIN_PATH` in the launching environment rather
+than a repository file.
 
-MCP access and instruction discovery are separate mechanisms. If Claude Code or
-Codex starts in another repository, connecting `obsidian-files` does not mean
-the client will load `CLAUDE.md` or `AGENTS.md` from the MCP root. Add a short
-bridge to each user's global instruction file.
+Before any MCP read or write, call `list_allowed_directories`. Stop unless it
+returns exactly the intended vault. Test that a sibling path is denied. Repeat
+the check after a client root-change event, client upgrade, server upgrade, or
+workspace change. Codex's public documentation does not define whether it
+advertises MCP roots, so test each supported Codex version rather than assuming
+the command-line allowlist wins.
 
-For Claude Code, add this to `~/.claude/CLAUDE.md`:
+The official server exposes `write_file`, `edit_file`, `move_file`, and
+directory creation. It has no delete tool. `write_file` can overwrite existing
+files, and `move_file` removes the source path. Use client tool policies to
+require approval for each write-capable tool, but enforce protected paths with
+OS permissions or read-only mounts. Tool approval cannot make a writable root
+path-aware.
 
-```markdown
-# Second brain
-
-The filesystem MCP server `obsidian-files` exposes the second-brain vault.
-Before vault work, read `AGENTS.md` or `CLAUDE.md` at the vault root and then
-`00-system/llm-wiki-spec.md`. Do not treat MCP access as permission to ingest
-unrelated project material.
-```
-
-For Codex, add the same bridge to `~/.codex/AGENTS.md`. The bridge names the
-server and requires the agent to load the canonical rules before writes. It
-should not contain the absolute vault path, private note names, or project
-details.
-
-## MCP roots are context boundaries, not security sandboxes
-
-The filesystem server accepts one or more allowed directories. It validates
-operations against those directories and can also use MCP roots supplied by a
-client. The MCP documentation warns that roots guide scope and help prevent
-accidental access, while operating-system permissions and sandboxing enforce
-security.
-
-Deployment must account for both boundaries. A process running under your user
-account may hold broader filesystem privileges than the MCP root suggests. A
-defect or malicious server should not inherit access to credentials, SSH keys,
-browser profiles, or unrelated repositories.
-
-Apply controls according to risk:
-
-1. Run the MCP process under an account that can access only the vault and its
-   required runtime files.
-2. Pass one vault directory instead of a broad home directory.
-3. Keep secrets outside the vault and outside readable parent directories.
-4. Use version history and tested backups before allowing agent writes.
-5. Review write, move, and delete operations until the workflow has earned a
-   narrower approval policy.
-
-The official filesystem server exposes write operations. If a use case needs
-read-only access, enforce read-only filesystem permissions or use a server that
-implements a read-only tool surface. A natural-language instruction saying
-"do not write" cannot provide the same guarantee.
+MCP access and instruction discovery remain separate. A connected server does
+not load the vault's `CLAUDE.md` or `AGENTS.md`. Require an instruction check
+before vault work, while relying on the OS boundary rather than the instruction
+for containment.
 
 ## Define write authority before the first ingest
 
@@ -549,9 +671,9 @@ from changes that can damage provenance or erase state.
 | Operation | Initial authority | Reason |
 |---|---|---|
 | Search and read wiki pages | Automatic | Required for normal query work |
-| Create a source capture | Review after write | Original evidence must remain inspectable |
+| Create a package in `source-staging/` | Review after write | Original evidence must remain inspectable |
 | Propose a wiki update | Review after write | Synthesis can introduce unsupported claims |
-| Remove a processed inbox item | Approval required | Removal closes the ingest transaction |
+| Move an inbox item to `processed/` | Approval required | The move closes the ingest transaction |
 | Rewrite or delete a source | Blocked | Source integrity has priority over convenience |
 | Merge or rename concepts | Approval required | Links and query history may depend on filenames |
 | Edit a project decision | Approval required | A decision has an accountable owner |
@@ -561,16 +683,34 @@ from changes that can damage provenance or erase state.
 
 The table is a policy baseline, not a capability claim about either client.
 Claude Code and Codex expose different permission controls, and their product
-surfaces change. Enforce high-risk rules through filesystem permissions,
-branches, hooks, or an MCP server with a reduced tool set when the client cannot
-express the required policy.
+surfaces change. Let a human or administrator identity own `AGENTS.md`,
+`CLAUDE.md`, `00-system/`, and `sources/`; grant the agent identity read-only
+access. Grant writes only to `source-staging/`, queue, wiki, query log, and
+approved operational paths. Require approval for write-capable MCP tools. An
+instruction cannot stop `write_file` from overwriting a file when the process
+still has permission.
 
 Treat ingest as a transaction with visible stages. The inbox item exists at the
-start. The agent creates a source note, updates concepts, and presents the diff.
-Approval closes the transaction by removing the inbox item. If the session
-fails before approval, the remaining inbox item signals unfinished work. A
-future agent can inspect the source note and diff before retrying instead of
-guessing whether ingestion completed.
+start. The agent creates a package in `source-staging/`, updates concepts, and
+runs `git status --short`. New files do not appear in a normal unstaged
+`git diff`; use `git add -N <path>` for an intent-to-add review or stage the
+complete transaction and inspect `git diff --cached`. Approval lets a human
+promote the source package to `sources/`, set read-only ownership, move the
+inbox item to `processed/`, run `git add -A`, review the final staged diff, and
+commit all related paths together. If the session fails before approval, the
+remaining inbox item signals unfinished work.
+
+Rollback needs a known committed state:
+
+```bash
+git log --oneline -- path/to/file.md
+git restore --source=abc1234 -- path/to/file.md
+```
+
+Replace `abc1234` with the reviewed commit from the log.
+
+Git cannot restore an untracked file that never entered a commit. Test external
+backup restore as well.
 
 Queries need less write authority. The agent may answer without changing the
 wiki. If the answer reveals a durable gap, it can propose an
@@ -585,24 +725,27 @@ nothing about the other two.
 
 Start from a repository that does not contain the vault. Ask the client to list
 its MCP servers without reading vault files. Confirm that `obsidian-files`
-appears and that its configured argument points only to the vault root. Then ask
-the agent to read the vault entry file and summarize the source, wiki,
-operational, and governance layers. Reject the session if it cannot identify
-those boundaries.
+appears, then call `list_allowed_directories` before any other filesystem tool.
+Stop unless the returned list contains exactly the intended vault. A configured
+argument is insufficient because MCP roots may have replaced it. Then ask the
+agent to read the vault entry file and summarize the source, wiki, operational,
+and governance layers. Reject the session if it cannot identify those
+boundaries.
 
 Run a read-only probe:
 
 ```text
-Using the second-brain filesystem tools, read the vault entry instructions and
-list the filenames in wiki/. Do not read source bodies and do not modify files.
-Report the filesystem root exposed by the tool if that metadata is available.
+Call list_allowed_directories. Continue only if it returns the intended vault
+and no other directory. Then read the vault entry instructions and list the
+filenames in wiki/. Do not read source bodies and do not modify files. Report
+the allowed directory and client version.
 ```
 
 Use the probe to check least-context behavior. A client that reads every source
 to answer a directory question wastes context and expands the privacy surface.
 
 Next, run a disposable write probe. Create a temporary concept under a test
-directory, inspect its diff, and remove it through the normal approval path.
+directory, inspect its diff, and move it through the normal approval path.
 Do not use a real source for this check. Confirm that the agent cannot reach a
 sibling directory outside the configured root. An MCP refusal helps, but the
 operating-system identity should deny the path as well in a higher-risk setup.
@@ -615,14 +758,17 @@ same tools.
 
 ## Ingest one source end to end
 
-Assume the user puts `context-window-notes.md` in `inbox/`. The file contains a
-URL, a short excerpt, and personal notes about a paper. Ask the agent to ingest
-one item rather than the whole queue:
+Assume the user puts `lost-in-the-middle.pdf` and
+`context-window-notes.md` in `inbox/`. The note identifies the PDF and its
+canonical URL. Ask the agent to ingest this bounded source pair rather than the
+whole queue:
 
 ```text
-Ingest inbox/context-window-notes.md according to the vault specification.
-Show the proposed source file and affected wiki pages before deleting the inbox
-item. Do not modify operational memory.
+Ingest inbox/lost-in-the-middle.pdf and its context-window-notes.md sidecar
+according to the vault specification.
+Show the proposed source directory, affected wiki pages, `git status --short`,
+and staged diff before moving the inbox item to processed/. Do not modify
+operational memory.
 ```
 
 The agent should read the specification, inspect the inbox item, and search the
@@ -630,17 +776,25 @@ wiki for related concepts. Search comes before creation. If
 `wiki/context-budget.md` already covers the subject, the agent should update it
 instead of adding `wiki/context-window-notes.md`.
 
-The source capture might look like this:
+The agent creates a collision-resistant package in `source-staging/`, copies the
+PDF bytes without transformation, computes SHA-256, and writes `source.md`
+beside the original. The sidecar might look like this:
 
 ```markdown
 ---
 type: source
-captured: 2026-06-22
+source_id: 2026-06-22-lost-in-the-middle-7f3e9b21
+capture_kind: original
 url: https://arxiv.org/abs/2307.03172
 author: Nelson F. Liu et al.
 title: "Lost in the Middle: How Language Models Use Long Contexts"
-license_or_capture_basis: link_and_summary
-checked: 2026-06-22
+published_or_version: "arXiv:2307.03172"
+retrieved_at: 2026-06-22T12:00:00Z
+original_filename: original.pdf
+media_type: application/pdf
+sha256: "<verified-sha256>"
+license_or_capture_basis: original
+derived_by: human_or_agent_identifier
 tags:
   - source
   - long-context
@@ -657,6 +811,12 @@ a long context.
 
 These findings support bounded retrieval and synthesis. They do not establish a
 universal page length or prove that a wiki outperforms long-context prompting.
+
+## Claim locators
+
+- Position-sensitive performance: original.pdf, Results section and figures.
+- Scope limit: original.pdf, task descriptions for multi-document QA and
+  key-value retrieval.
 ```
 
 The qualification in the last paragraph matters. An agent can turn a narrow
@@ -668,9 +828,11 @@ agent should preserve existing claims that the new source does not address. If
 the paper conflicts with an existing page, the page should describe the
 conflict instead of choosing a winner without criteria.
 
-Review the diff. Confirm that the source URL and title match, that the concept
-page does not overstate the paper, and that no duplicate page appeared. Remove
-the inbox item only after those checks pass.
+Review `git status --short` and the staged diff. Confirm that the source URL,
+title, native file, and hash match; that each material claim has a locator; and
+that no duplicate page appeared. A human then promotes the package to
+`sources/`, makes it read-only for the agent identity, moves both inbox files to
+`processed/`, and commits the complete ingest transaction.
 
 ## Query the wiki before the sources
 
@@ -756,22 +918,25 @@ second_brain_eval:
   expected_new_wiki_pages: 0
   expected_updated_wiki_pages:
     - wiki/existing-concept.md
-  inbox_removed_after_review: true
+  inbox_moved_to_processed_after_review: true
   prohibited_paths:
     - 10-projects/
     - 20-decisions/
 ```
 
-Run the case once with each client on separate Git branches or disposable vault
-copies. Compare changed files, provenance, unsupported claims, and instruction
-compliance. The prose may differ. Both agents should preserve the same
-invariants.
+Run the case once with each client in a separate Git worktree or disposable
+vault copy. A branch alone does not isolate two concurrent processes in one
+working tree. Compare changed files, provenance, unsupported claims, and
+instruction compliance. The prose may differ. Both agents should preserve the
+same invariants.
 
-Avoid asking both agents to edit the same page at the same time. Markdown files
-do not provide record-level locking. Shared sync systems can propagate writes
-without understanding semantic conflicts. Use one writer per branch or task,
-then merge after review. If two agents changed the same concept, reconcile the
-claims and sources rather than accepting the version with fewer merge markers.
+Use a single-writer queue for the live vault. Markdown files do not provide
+record-level locking, and a check before editing leaves a race before the
+write. If parallel work is required, assign each agent a separate Git worktree
+and branch. Record the pre-edit blob hash, compare it again before commit, and
+reject stale writes. Shared sync systems can still propagate incompatible
+changes, so reconcile claims and provenance during merge rather than accepting
+the version with fewer conflict markers.
 
 ## Control synthesis drift
 
@@ -820,12 +985,17 @@ tools to an agent that only needs file read and write. Require approval before
 following links or downloading attachments. Scan captured files for credentials
 and personal data before promoting them into `sources/`.
 
-MCP servers form a supply-chain boundary. Pin package versions when your
-operating policy requires reproducibility, review release changes, and deny a
-downloaded server access to the whole home directory. The
-`npx -y` examples favor a short setup. A production environment should record
-the resolved package version and verify it through the organization's software
-supply-chain process.
+Disable generated client memory during vault work. Otherwise source text or an
+injected instruction can persist under a client-owned directory outside the
+vault, outside Git review, and across later sessions. Review existing Claude
+auto memory and Codex memory before using an established client profile with
+sensitive material.
+
+MCP servers form a supply-chain boundary. Pin the package version and record the
+npm integrity value, release commit, Node version, and client versions. Review
+release changes before an upgrade. Deny the server access to the whole home
+directory through OS permissions or container mounts; a command-line allowlist
+can change after MCP root negotiation.
 
 The vault can contain sensitive knowledge even without names or credentials.
 Research interests, health notes, employment decisions, and personal routines
@@ -880,30 +1050,37 @@ fictional system's retention period changed from 30 days to 14 days on a known
 date. Add an existing wiki page that still states 30 days. Then run the same
 task through each agent.
 
-The agent should preserve the source, update the existing concept, mark the old
-claim as superseded, add the verification date, and log the question. It should
-not create a duplicate concept, edit a project decision, or remove the inbox
-item before review.
+The agent should preserve the original and hash, update the existing concept,
+mark the old claim as superseded, add the verification date and locator, and log
+the question. It should not create a duplicate concept or edit a project
+decision. It moves the inbox item to `processed/` only after review.
 
 The acceptance record can stay small:
 
 ```yaml
 acceptance_result:
   client: claude-code
+  client_version: "2.1.185"
   checked_on: 2026-06-22
-  source_preserved: true
-  provenance_link_present: true
+  client_memory_disabled: true
+  source_original_preserved: true
+  source_hash_verified: true
+  claim_locator_present: true
   existing_page_updated: true
   duplicate_page_created: false
   stale_claim_marked: true
   query_logged: true
+  inbox_moved_to_processed: true
+  staged_diff_reviewed: true
+  atomic_commit_created: true
   prohibited_path_changes: []
   reviewer: human
   decision: pass
 ```
 
-Repeat with Codex. Review the Git diff after each run. Restore the disposable
-copy between clients so the second agent receives the same initial state.
+Repeat with Codex. Review `git status --short` and the staged diff after each
+run. Restore the disposable copy between clients so the second agent receives
+the same initial state.
 
 Negative tests should cover an instruction injection, a fake credential
 pattern, a query without supporting evidence, and two sources that disagree.
@@ -932,6 +1109,19 @@ test.
 another repository but never reads the vault specification. Add global bridge
 instructions and begin each vault task with a read-only rule check.
 
+**MCP roots replace the configured vault.** The filesystem server accepts roots
+from the client and swaps its command-line allowlist. Check
+`list_allowed_directories` before use and enforce the intended root with an OS
+identity or sandbox.
+
+**Client memory copies content outside the vault.** Claude auto memory or Codex
+memory retains source text or injected instructions outside Git review. Disable
+generated memory for vault sessions and audit existing memory.
+
+**Git review misses new files.** A normal unstaged `git diff` omits untracked
+sources and wiki pages. Check `git status --short`, then use intent-to-add or a
+staged diff before approval.
+
 **A long instruction file consumes context and loses adherence.** Move detailed
 schemas into referenced files. Keep the entry point concise and testable.
 
@@ -956,9 +1146,10 @@ The second stage adds both clients, the shared canonical specification, source
 and wiki schemas, query logging, and a small acceptance set. The owner compares
 Claude Code and Codex on the same disposable cases.
 
-The third stage adds filesystem MCP for cross-repository access, operating-
-system restrictions, backups, revalidation dates, and explicit correction
-handling. Write approval remains close to the human.
+The third stage adds backups, revalidation dates, explicit correction handling,
+separate worktrees for parallel tasks, and OS protection for governance and
+approved originals. An optional filesystem MCP route requires a dedicated
+identity or container, a pinned server, and an exact allowed-directory check.
 
 The fourth stage can add local hybrid search, automated linting, link checks,
 stale-source reports, and team review. Derived indexes remain rebuildable from
@@ -1002,8 +1193,12 @@ current documentation before deployment.
 - [Claude Code: Configure permissions](https://code.claude.com/docs/en/permissions)
 - [OpenAI Codex: Custom instructions with AGENTS.md](https://developers.openai.com/codex/guides/agents-md)
 - [OpenAI Codex: Model Context Protocol](https://developers.openai.com/codex/mcp)
+- [OpenAI Codex: Memories](https://developers.openai.com/codex/memories)
 - [MCP roots](https://modelcontextprotocol.io/docs/concepts/roots)
-- [Official filesystem MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem)
+- [Filesystem MCP server snapshot, release 2026.1.14](https://github.com/modelcontextprotocol/servers/tree/3e805376da81c063c2798410906b5fd134334a43/src/filesystem)
+- [W3C PROV-DM](https://www.w3.org/TR/prov-dm/)
+- [Git status](https://git-scm.com/docs/git-status)
+- [Git restore](https://git-scm.com/docs/git-restore)
 - [Obsidian internal links](https://help.obsidian.md/links)
 - [Obsidian properties](https://help.obsidian.md/properties)
 - [Obsidian graph view](https://help.obsidian.md/plugins/graph)

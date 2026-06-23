@@ -95,12 +95,24 @@ supplemental_chapter_register:
       sources:
         - https://developers.openai.com/codex/guides/agents-md
         - https://developers.openai.com/codex/mcp
+        - https://developers.openai.com/codex/memories
       action: keep_instruction_discovery_limits_and_mcp_commands_dated
     - claim_area: mcp_filesystem_boundary
+      package: "@modelcontextprotocol/server-filesystem"
+      package_version: "2026.1.14"
+      source_snapshot_commit: "3e805376da81c063c2798410906b5fd134334a43"
       sources:
         - https://modelcontextprotocol.io/docs/concepts/roots
-        - https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem
-      action: distinguish_declared_roots_from_os_permissions_and_sandboxing
+        - https://github.com/modelcontextprotocol/servers/tree/3e805376da81c063c2798410906b5fd134334a43/src/filesystem
+      action: record_roots_replacement_tool_surface_and_os_boundary
+    - claim_area: provenance_and_git_transaction
+      sources:
+        - https://www.w3.org/TR/prov-dm/
+        - https://git-scm.com/docs/git-status
+        - https://git-scm.com/docs/git-diff
+        - https://git-scm.com/docs/git-restore
+        - https://git-scm.com/docs/git-worktree
+      action: require_immutable_original_hash_claim_locator_and_atomic_commit
     - claim_area: obsidian_markdown_interface
       sources:
         - https://help.obsidian.md/links
