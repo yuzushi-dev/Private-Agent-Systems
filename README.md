@@ -71,6 +71,7 @@ This repository is the stable place for material that may change after publicati
 
 - [`templates/`](templates/): fill-in versions of the reusable artifacts from Appendix B (route cards, eval cases, data flow, policy gates, and more)
 - [`chapters/`](chapters/): supplemental chapters published after the first edition
+- [`evidence/`](evidence/): sanitized public evidence tables referenced by supplemental chapters
 - [`second-brain-starter/`](second-brain-starter/): runnable companion files for the governed LLM Wiki chapter
 - [`source-register.md`](source-register.md): the dated source register from Appendix B, kept current here as sources change
 - Companion links for Amber and Relic (above)
@@ -93,6 +94,8 @@ The print book, ebook, and Kindle edition may refer readers here when a resource
 ├── chapters/
 │   ├── building-a-governed-llm-wiki.md
 │   └── governing-context-budgets.md
+├── evidence/
+│   └── token-saving-public-results.md
 ├── second-brain-starter/  Portable Claude Code and Codex vault skeleton.
 └── templates/             Fill-in operational artifacts from Appendix B (CC0).
     ├── README.md          Index of all templates, mapped to their book chapters.

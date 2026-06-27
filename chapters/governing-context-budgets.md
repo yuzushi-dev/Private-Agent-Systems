@@ -249,7 +249,7 @@ published measurement set covers reusable layers of the stack: shell-output
 filtering, context masking, progressive skill loading, memory retrieval, and
 source-code orientation. The audit snapshot was generated on 2026-06-26. The
 public table ID is `context-budget-public-results-2026-06-26`, published in the
-companion repository under `marketing/token-saving-public-results.md`. The
+companion repository under `evidence/token-saving-public-results.md`. The
 source register records the checked date, table path, and checksum.
 
 | Layer | Evidence type | Scope | Baseline path | Optimized path | Acceptance reviewer | Claim limit |
@@ -606,7 +606,7 @@ The companion source register records this chapter as a dated snapshot. The
 context-budget rows were checked on 2026-06-26 and cite the sanitized public
 result table as the publication source:
 `context-budget-public-results-2026-06-26`, at
-`marketing/token-saving-public-results.md`. The source register records the
+`evidence/token-saving-public-results.md`. The source register records the
 checked date, table path, and checksum.
 
 Read the measurements with these limits:
