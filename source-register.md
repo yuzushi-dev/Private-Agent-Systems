@@ -136,6 +136,7 @@ The audit rows are sanitized task measurements, not provider invoices.
 supplemental_chapter_register:
   chapter: governing_context_budgets
   checked_on: "2026-06-26"
+  evidence_table_id: context-budget-public-results-2026-06-26
   rows:
     - claim_area: context_budget_public_results
       source: marketing/token-saving-public-results.md

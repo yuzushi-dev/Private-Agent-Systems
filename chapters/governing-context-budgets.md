@@ -2,8 +2,8 @@
 
 A developer asks a coding agent a narrow design question. The agent opens
 files, reads command output, loads project instructions, sees tool schemas,
-scans memory, and pulls snippets from search. The answer may help. The run paid
-for every chunk the agent packed into the prompt.
+scans memory, and pulls snippets from search. The answer may help, but the run
+still consumed every chunk the agent packed into the prompt.
 
 The visible cost is tokens, latency, and expensive retry loops. The harder
 failure comes later. The agent starts carrying stale notes, duplicate
@@ -14,9 +14,11 @@ Large context windows do not remove the runtime decision. A private agent still
 needs a harness that decides what enters context, why it enters, and which
 narrower path could have answered the same request.
 
-Context budget is a governance surface. The runtime must record which state,
-memory, source material, and tool outputs entered the model call. It must also
-record the acceptance check that made the smaller context path legitimate.
+A private agent system is the runtime around the model: identity, tool access,
+memory, retrieval, state, routing, approvals, and traces. For an auditable
+private agent, the runtime records which state, memory, source material, and
+tool outputs entered the model call. It also records the acceptance check that
+made the smaller context path legitimate.
 
 ## Context belongs in the runtime contract
 
@@ -69,7 +71,7 @@ removed. A private agent usually carries six classes of prompt material.
 | Source material | Code, docs, notes, tickets, wiki pages | Overbroad disclosure | Narrow retrieval and claim locators |
 | Tool schemas | Available tools, parameters, descriptions | Capability expansion | Route-specific tool exposure |
 
-: Prompt material should have a data class and a budget rule
+*Table: Prompt material should have a data class and a budget rule.*
 
 The budget control differs by class. Instruction mass should not be loaded
 because it exists. It should be loaded because the task triggered it. Memory
@@ -87,7 +89,7 @@ context."
 
 A context budget becomes enforceable when it is attached to a route. The route
 describes the kind of task, the context classes it may use, the tool surface it
-may expose, and the acceptance check it must satisfy.
+may expose, and the acceptance check it needs to satisfy.
 
 A coding investigation route might allow project instructions, filtered shell
 output, source-code orientation, and bounded file reads. It may deny long-term
@@ -197,22 +199,71 @@ skill loader, a memory system, and a source-code graph each remove a different
 kind of prompt material. A defensible claim says which layer avoided which class
 of context, for which task, under which acceptance condition.
 
+## Measurement method
+
+The measurements below are not provider invoices and are not end-to-end success
+benchmarks. They are context-selection measurements from a dated audit snapshot.
+
+For each row, the audit records:
+
+- the tool or runtime layer measured;
+- the context class removed or kept outside the active prompt;
+- the baseline path;
+- the optimized path;
+- the token estimation method;
+- the acceptance check;
+- the reviewer class for the acceptance decision;
+- the checked date;
+- the limit of the claim.
+
+The broad path means the prompt route that would expose raw command output,
+active tool output, always-on instructions, broad memory context, or broad
+source context for that task class. The optimized path means the narrower route:
+filtered command output, deferred active context, triggered skills, selected
+memory detail, or structured source orientation.
+
+When token counts are estimated, the table marks them as estimates. When a
+number is reported by a tool's own instrumentation, the table marks it as
+runtime-reported. When a measurement covers only source-code orientation, memory
+retrieval, or command-output filtering, the claim is limited to that step and
+does not imply full task success or provider billing savings.
+
+Token reduction never decides acceptance. The task owner or operator reviews the
+result against the acceptance field recorded for that row.
+
+The public snapshot reports accepted measurements only. Negative cases belong in
+the private audit log and should be summarized separately when they change route
+design.
+
 ## Audit snapshot
 
 The companion repository includes a dated, sanitized context-budget audit. The
 published measurement set covers reusable layers of the stack: shell-output
 filtering, context masking, progressive skill loading, memory retrieval, and
-source-code orientation. The audit snapshot was generated on 2026-06-26.
+source-code orientation. The audit snapshot was generated on 2026-06-26. The
+public table ID is `context-budget-public-results-2026-06-26`.
+
+| Layer | Evidence type | Scope | Baseline path | Optimized path | Claim limit |
+|---|---|---|---|---|---|
+| RTK | Runtime-reported | Shell-output filtering | Raw command output | Filtered command output | Not total agent cost |
+| Claude Context Mode | Runtime-reported | Active context pressure | Tool output in active context | Deferred or kept outside context | Not data classification |
+| Progressive skill loading | Static footprint estimate | Always-on instruction mass | Full skill library loaded | Triggered skills only | Not billing saving |
+| `claude-mem` | Task-level estimate | Memory retrieval | Broad memory context | Selected detail fetch | Single task check |
+| `codebase-memory-mcp` | Task-level estimate | Source-code orientation | Broad source prompt | Structured orientation | Not end-to-end success |
+
+*Table: Public context-budget evidence by layer and claim limit.*
 
 RTK reported **23.8 million shell-output tokens saved**, a **63.70% reduction**,
 across **22,909 observed commands**. The number captures command-output
-filtering, not total agent cost. Treat it as a dated runtime snapshot because
-the aggregate changes as more commands run.
+filtering for supported shell output, not total agent cost or every agent tool
+call. Treat it as a dated runtime snapshot because the aggregate changes as more
+commands run.
 
 Claude Context Mode reported **1.10 million tokens saved** across **20 recorded
 sessions**, with a **50.95% average reduction**. It also kept **4,407,150
 bytes** out of active context. It measures active prompt pressure: large outputs
-can remain outside the model call until the agent needs them.
+can remain outside the model call until the agent needs them. Qualify the claim
+by environment and interception path.
 
 Progressive skill loading kept a large instruction surface out of the always-on
 layer. The Codex skill bodies measured about **151,339 estimated tokens**. The
@@ -220,22 +271,23 @@ Claude skill bodies measured about **170,589 estimated tokens**. Report this as
 avoided always-on footprint, not as provider-billed runtime saving.
 
 `claude-mem` reduced one memory-retrieval task from **6,762** estimated tokens
-to **2,606**, saving **4,156 tokens**, or **61.46%**. The smaller path met the
+to **2,606**, saving **4,156 tokens**, or about **61%**. The smaller path met the
 same acceptance check for the task.
 
-`codebase-memory-mcp` produced the clearest query-time result. For one
+`codebase-memory-mcp` produced the largest accepted query-time reduction. For one
 feature-area orientation task, the broad prompt path would have used **44,917
 estimated tokens**. The structured orientation path used **704 estimated
-tokens**. That avoided **44,213 estimated prompt tokens**, a **98.43% reduction**
+tokens**. That avoided **44,213 estimated prompt tokens**, about **98%**
 for that step.
 
 For an architecture overview, the broad prompt path would have used **159,372
 estimated tokens**. The structured result used **1,050 estimated tokens**,
-avoiding **158,322 tokens**, a **99.34% reduction**.
+avoiding **158,322 tokens**, about **99%**.
 
 The numbers do not prove end-to-end task success. They show that a structured
 orientation step can answer the question without loading broad source context
-into the model.
+into the model. Do not generalize the 98-99% orientation reductions to every
+repository, task, or agent run.
 
 ## Choose the tool by context problem
 
@@ -250,17 +302,19 @@ use several of them, but each should have a narrow job.
 | `claude-mem` | Long-term memory retrieval with selected detail fetches | Retention policy or privacy review by itself |
 | `codebase-memory-mcp` | Source-code orientation before reading files | Index maintenance, final code review |
 
-: Context-budget tools by primary purpose
+*Table: Context-budget tools by primary purpose.*
 
 Use RTK when build logs, test output, search output, and command noise can
 dwarf the relevant line. A shell command can produce thousands of lines while
 only one assertion failure matters. The shell filter belongs before the model
-call, not after the model has paid to read the noise.
+call, not after the model has paid to read the noise. Treat RTK as command-output
+filtering, not as coverage for every built-in file or search tool.
 
 Use Claude Context Mode when a session produces large tool outputs or file
 reads that should stay outside active context until the agent asks for them.
 It fits long-running investigations where many observations are available but
-only a few need to enter the next prompt.
+only a few need to enter the next prompt. Review the actual interception path
+before claiming uniform coverage.
 
 Use progressive skill loading when a procedure, domain convention, or safety
 check belongs in a task-specific file rather than in the always-on prompt. A
@@ -385,8 +439,8 @@ Trace review should answer four questions:
 - Did a narrower path exist and pass acceptance?
 - Did the route expose tools or memory the task did not need?
 
-The answers connect cost, privacy, and reliability. A cheap prompt that misses
-the relevant source is not governed. A rich prompt that includes unneeded
+The answers connect cost, privacy, and reliability. A low-cost prompt that
+misses the relevant source is not governed. A rich prompt that includes unneeded
 private memory is not governed either.
 
 ## Put context budget in approval policy
@@ -415,10 +469,10 @@ context selection changes the way you treat tool permissions or model routes.
 
 Review is needed when a route adds a new memory source, exposes a new tool,
 loads a new instruction file, changes retrieval ranking, or relaxes a source
-read boundary. The change may be small in code and large in behavior. A single
-extra instruction can give the model a new procedure. A single memory source can
-carry stale preference data into unrelated tasks. A single broad read rule can
-turn a narrow investigation into a private-data exposure.
+read boundary. The change may be small in code and large in behavior: one
+instruction can give the model a new procedure, one memory source can carry
+stale preference data, and one broad read rule can turn a narrow investigation
+into private-data exposure.
 
 A route change review includes:
 
@@ -430,11 +484,9 @@ A route change review includes:
 - The trace field that will record the decision.
 
 Route review prevents "helpful" prompt growth. Teams often add context after one
-bad answer and never remove it. A project instruction grows, a memory summary
-gets copied into the always-on prompt, a tool description becomes global, and
-the next hundred tasks pay for the workaround. Route review forces the team to
-ask whether the fix belongs in retrieval, a skill, a source locator, or an
-acceptance check instead.
+bad answer and never remove it. Route review forces the team to ask whether the
+fix belongs in retrieval, a skill, a source locator, or an acceptance check
+instead.
 
 The rollback path must be explicit. If a route change increases cost or
 introduces stale context, the operator needs a way to remove it without
@@ -444,25 +496,24 @@ procedure, and memory retrieval remains policy-bound.
 
 ## Common failure modes
 
-**The agent loads the instruction library by default.** The model sees many
-procedures, examples, and constraints unrelated to the task. The run becomes
-longer and less predictable. Use progressive loading and record which skill
-triggered.
+**The agent loads the instruction library by default.** The model sees
+procedures, examples, and constraints unrelated to the task. Use progressive
+loading and record which skill triggered.
 
 **The memory layer behaves like a transcript dump.** Prior decisions, personal
 preferences, and stale observations enter the prompt together. Use search,
 selection, retention rules, and explicit fetches.
 
 **The source route starts with whole files.** The agent reads implementation
-detail before it knows which files matter. Use orientation steps, claim
-locators, and bounded source reads.
+detail before it knows which files matter. Use orientation steps and bounded
+source reads.
 
 **The shell route forwards raw command noise.** Test runs and build logs can
 dominate the prompt. Use output filtering that preserves the failing line,
 status, and relevant context.
 
 **The audit number loses its scope.** A task-level orientation saving becomes a
-claim about full task success. A static footprint estimate becomes a billing
+claim about full task success, or a static footprint estimate becomes a billing
 claim. Keep each number attached to its evidence class.
 
 **The trace records only what the model saw.** The operator cannot inspect
@@ -470,9 +521,9 @@ which candidates were rejected or why a narrower route was chosen. Record the
 selection decision, not just the final packet.
 
 **The public artifact exposes the private measurement path.** A chapter or
-companion repository can publish too much by naming internal artifacts,
-describing private setup, or leaving reproduction details beside sanitized
-numbers. Keep public evidence and private measurement artifacts separate.
+companion repository can publish too much by naming internal artifacts or
+describing private setup. Keep public evidence and private measurement artifacts
+separate.
 
 **The route hides behind tool branding.** A team says "we use memory" or "we
 use a graph" without describing when the runtime selects those layers. Tool
@@ -508,28 +559,24 @@ Finally, publish only sanitized results. Public claims should show the layer,
 best use, evidence type, scope, acceptance condition, and limits. Keep internal
 measurement artifacts under the access policy that matches their data class.
 
-The staged path gives teams a review order. Shell filtering is usually low risk
-and easy to verify. Instruction loading affects every task and needs review
-before a team adds a large skill library. Memory selection carries
-privacy and retention questions. Source-code orientation affects correctness
-and developer trust. Public evidence touches reputation, so produce it after
-the internal measurements have been reviewed.
+The staged path gives teams a review order. Shell filtering is usually low risk.
+Instruction loading affects every task. Memory selection carries privacy and
+retention questions. Source-code orientation affects correctness and developer
+trust. Public evidence touches reputation, so produce it after internal review.
 
 ## Operating the system
 
-Context budget belongs in ordinary agent operations.
+Context budget belongs in ordinary agent operations. During planning, the agent
+names the route and context classes. During execution, the runtime records
+loaded instructions, retrieved memory, source locators, tool outputs, and token
+estimates. During review, the operator compares the accepted result against the
+narrower path. During publication, the team removes data that identifies private
+systems, projects, people, or local state.
 
-During planning, the agent names the route and context classes it expects to
-use. During execution, the runtime records loaded instructions, retrieved
-memory, source locators, tool outputs, and token estimates. During review, the
-operator compares the accepted result against the narrower path. During
-publication, the team removes data that identifies private systems, projects,
-people, or local state.
-
-The operator also reviews negative cases. When a smaller context path fails,
-keep the failure. It marks a boundary where the route needs more source
-material, a better retrieval index, or a stronger acceptance check. A governance
-system that records only savings will teach the team to over-trim.
+The operator also reviews negative cases. A failed smaller path marks a boundary
+where the route needs more source material, a better retrieval index, or a
+stronger acceptance check. A governance system that records only savings will
+teach the team to over-trim.
 
 Context-budget review belongs near other release checks:
 
@@ -548,7 +595,8 @@ publishing the operational details the runtime was supposed to govern.
 
 The companion source register records this chapter as a dated snapshot. The
 context-budget rows were checked on 2026-06-26 and cite the sanitized public
-result table as the publication source.
+result table as the publication source:
+`context-budget-public-results-2026-06-26`.
 
 Read the measurements with these limits:
 
