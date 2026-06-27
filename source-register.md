@@ -137,6 +137,8 @@ supplemental_chapter_register:
   chapter: governing_context_budgets
   checked_on: "2026-06-26"
   evidence_table_id: context-budget-public-results-2026-06-26
+  evidence_table_path: marketing/token-saving-public-results.md
+  evidence_table_sha256: a12b799ea3f6ed8513d7a447be65edab714a96b3a1cc15d2cea9882b6bd7000b
   rows:
     - claim_area: context_budget_public_results
       source: marketing/token-saving-public-results.md

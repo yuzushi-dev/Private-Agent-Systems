@@ -216,11 +216,18 @@ For each row, the audit records:
 - the checked date;
 - the limit of the claim.
 
-The broad path means the prompt route that would expose raw command output,
-active tool output, always-on instructions, broad memory context, or broad
-source context for that task class. The optimized path means the narrower route:
-filtered command output, deferred active context, triggered skills, selected
-memory detail, or structured source orientation.
+The broad path is the recorded or reconstructed route that would expose raw
+command output, active tool output, always-on instructions, broad memory
+context, or broad source context for that task class. The optimized path is the
+narrower route actually measured for the same task class: filtered command
+output, deferred active context, triggered skills, selected memory detail, or
+structured source orientation.
+
+For task-level source-orientation rows, the broad path is the source packet that
+the unguided route would have loaded before the structured orientation step:
+selected broad files, broad search output, or architecture material recorded in
+the private trace. The public table reports the token count and scope, not the
+private source content.
 
 When token counts are estimated, the table marks them as estimates. When a
 number is reported by a tool's own instrumentation, the table marks it as
@@ -231,9 +238,9 @@ does not imply full task success or provider billing savings.
 Token reduction never decides acceptance. The task owner or operator reviews the
 result against the acceptance field recorded for that row.
 
-The public snapshot reports accepted measurements only. Negative cases belong in
-the private audit log and should be summarized separately when they change route
-design.
+The public snapshot reports accepted measurements only and should not be read as
+an acceptance-rate report. Negative cases remain in the private audit log and
+should be summarized separately when they change route design.
 
 ## Audit snapshot
 
@@ -241,15 +248,17 @@ The companion repository includes a dated, sanitized context-budget audit. The
 published measurement set covers reusable layers of the stack: shell-output
 filtering, context masking, progressive skill loading, memory retrieval, and
 source-code orientation. The audit snapshot was generated on 2026-06-26. The
-public table ID is `context-budget-public-results-2026-06-26`.
+public table ID is `context-budget-public-results-2026-06-26`, published in the
+companion repository under `marketing/token-saving-public-results.md`. The
+source register records the checked date, table path, and checksum.
 
-| Layer | Evidence type | Scope | Baseline path | Optimized path | Claim limit |
-|---|---|---|---|---|---|
-| RTK | Runtime-reported | Shell-output filtering | Raw command output | Filtered command output | Not total agent cost |
-| Claude Context Mode | Runtime-reported | Active context pressure | Tool output in active context | Deferred or kept outside context | Not data classification |
-| Progressive skill loading | Static footprint estimate | Always-on instruction mass | Full skill library loaded | Triggered skills only | Not billing saving |
-| `claude-mem` | Task-level estimate | Memory retrieval | Broad memory context | Selected detail fetch | Single task check |
-| `codebase-memory-mcp` | Task-level estimate | Source-code orientation | Broad source prompt | Structured orientation | Not end-to-end success |
+| Layer | Evidence type | Scope | Baseline path | Optimized path | Acceptance reviewer | Claim limit |
+|---|---|---|---|---|---|---|
+| RTK | Runtime-reported | Shell-output filtering | Raw command output | Filtered command output | n/a, runtime aggregate | Not total agent cost |
+| Claude Context Mode | Runtime-reported | Active context pressure | Tool output in active context | Deferred or kept outside context | n/a, runtime aggregate | Not data classification |
+| Progressive skill loading | Static footprint estimate | Always-on instruction mass | Full skill library loaded | Triggered skills only | operator review | Not billing saving |
+| `claude-mem` | Task-level estimate | Memory retrieval | Broad memory context | Selected detail fetch | task owner/operator | Single task check |
+| `codebase-memory-mcp` | Task-level estimate | Source-code orientation | Broad source prompt | Structured orientation | task owner/operator | Not end-to-end success |
 
 *Table: Public context-budget evidence by layer and claim limit.*
 
@@ -262,8 +271,9 @@ commands run.
 Claude Context Mode reported **1.10 million tokens saved** across **20 recorded
 sessions**, with a **50.95% average reduction**. It also kept **4,407,150
 bytes** out of active context. It measures active prompt pressure: large outputs
-can remain outside the model call until the agent needs them. Qualify the claim
-by environment and interception path.
+can remain outside the model call until the agent needs them. The snapshot
+applies only to the recorded sessions and the interception paths active in that
+environment.
 
 Progressive skill loading kept a large instruction surface out of the always-on
 layer. The Codex skill bodies measured about **151,339 estimated tokens**. The
@@ -596,7 +606,8 @@ publishing the operational details the runtime was supposed to govern.
 The companion source register records this chapter as a dated snapshot. The
 context-budget rows were checked on 2026-06-26 and cite the sanitized public
 result table as the publication source:
-`context-budget-public-results-2026-06-26`.
+`context-budget-public-results-2026-06-26`, at
+`marketing/token-saving-public-results.md`.
 
 Read the measurements with these limits:
 
