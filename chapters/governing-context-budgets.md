@@ -219,15 +219,15 @@ For each row, the audit records:
 The broad path is the recorded or reconstructed route that would expose raw
 command output, active tool output, always-on instructions, broad memory
 context, or broad source context for that task class. The optimized path is the
-narrower route actually measured for the same task class: filtered command
-output, deferred active context, triggered skills, selected memory detail, or
-structured source orientation.
+narrower route measured for the same task class: filtered command output,
+deferred active context, triggered skills, selected memory detail, or structured
+source orientation.
 
 For task-level source-orientation rows, the broad path is the source packet that
 the unguided route would have loaded before the structured orientation step:
 selected broad files, broad search output, or architecture material recorded in
-the private trace. The public table reports the token count and scope, not the
-private source content.
+the private trace. The public table reports the token count, scope, and
+acceptance boundary, not the private source content.
 
 When token counts are estimated, the table marks them as estimates. When a
 number is reported by a tool's own instrumentation, the table marks it as
@@ -235,8 +235,8 @@ runtime-reported. When a measurement covers only source-code orientation, memory
 retrieval, or command-output filtering, the claim is limited to that step and
 does not imply full task success or provider billing savings.
 
-Token reduction never decides acceptance. The task owner or operator reviews the
-result against the acceptance field recorded for that row.
+Token reduction alone never decides acceptance. The task owner or operator
+reviews the result against the acceptance field recorded for that row.
 
 The public snapshot reports accepted measurements only and should not be read as
 an acceptance-rate report. Negative cases remain in the private audit log and
@@ -261,6 +261,9 @@ source register records the checked date, table path, and checksum.
 | `codebase-memory-mcp` | Task-level estimate | Source-code orientation | Broad source prompt | Structured orientation | task owner/operator | Not end-to-end success |
 
 *Table: Public context-budget evidence by layer and claim limit.*
+
+The acceptance reviewer column names the role class that accepted the smaller
+path, not a named person.
 
 RTK reported **23.8 million shell-output tokens saved**, a **63.70% reduction**,
 across **22,909 observed commands**. The number captures command-output
@@ -351,19 +354,20 @@ Public context-budget claims need a table because prose blurs categories. The
 table names the layer, best use, evidence type, baseline, optimized path, saved
 tokens, reduction, acceptance scope, and publication status.
 
-The evidence type protects the claim. A runtime aggregate can show what a tool
-reported during ordinary operation. It cannot prove that every downstream task
-became cheaper. A static footprint estimate can show how much instruction mass
-stays outside the always-on prompt. It cannot prove that a task used fewer
-provider-billed tokens. A task-level same-task estimate can show that a
-structured path answered a narrow question with less prompt material. It cannot
-claim end-to-end task success unless the end-to-end task was actually tested.
+The operator uses the evidence type to keep each claim inside the measured
+scope. A runtime aggregate can show what a tool reported during ordinary
+operation. It cannot prove that every downstream task became cheaper. A static
+footprint estimate can show how much instruction mass stays outside the
+always-on prompt. It cannot prove that a task used fewer provider-billed tokens.
+A task-level same-task estimate can show that a structured path answered a
+narrow question with less prompt material. It cannot claim end-to-end task
+success unless the audit tested the end-to-end task.
 
-The acceptance column protects the reader. If a row says "orientation answer
-accepted," the reader knows the number applies to an orientation step. If a row
-says "memory retrieval acceptance check passed," the reader knows the number
-applies to selecting memory, not to the whole user request. That boundary
-separates a measurement from a marketing number.
+The acceptance column tells the reader what passed review. If a row says
+"orientation answer accepted," the number applies to an orientation step. If a
+row says "memory retrieval acceptance check passed," the number applies to
+selecting memory, not to the whole user request. That boundary separates a
+measurement from a marketing number.
 
 Keep private infrastructure out of the table. A public claim does not need
 private system identifiers, internal measurement artifacts, trace payloads, or
@@ -394,7 +398,7 @@ Acceptance checks should stay narrow. Do not claim an end-to-end success result
 when the measurement covered only orientation. Do not claim provider billing
 savings when the measurement used estimated prompt tokens. Do not claim privacy
 improvement when the tool only removed noise. Each claim should name the task
-surface it actually measured.
+surface measured.
 
 A compact acceptance record can look like this:
 
@@ -588,15 +592,10 @@ where the route needs more source material, a better retrieval index, or a
 stronger acceptance check. A governance system that records only savings will
 teach the team to over-trim.
 
-Context-budget review belongs near other release checks:
-
-- Did the claim name the evidence class?
-- Did the claim keep its task scope?
-- Did the acceptance check pass?
-- Did the public artifact omit private system identifiers?
-- Did the text avoid implying provider invoice savings where the number is an
-  estimate?
-- Did the result table explain which tool fits which problem?
+Context-budget review belongs near other release checks: name the evidence
+class, keep the claim within scope, verify acceptance, avoid implying provider
+invoice savings from estimates, and remove private system identifiers from
+public artifacts.
 
 Review prevents a private agent chapter, article, or companion repository from
 publishing the operational details the runtime was supposed to govern.
@@ -607,7 +606,8 @@ The companion source register records this chapter as a dated snapshot. The
 context-budget rows were checked on 2026-06-26 and cite the sanitized public
 result table as the publication source:
 `context-budget-public-results-2026-06-26`, at
-`marketing/token-saving-public-results.md`.
+`marketing/token-saving-public-results.md`. The source register records the
+checked date, table path, and checksum.
 
 Read the measurements with these limits:
 
