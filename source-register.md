@@ -138,7 +138,7 @@ supplemental_chapter_register:
   checked_on: "2026-06-26"
   evidence_table_id: context-budget-public-results-2026-06-26
   evidence_table_path: evidence/token-saving-public-results.md
-  evidence_table_sha256: a12b799ea3f6ed8513d7a447be65edab714a96b3a1cc15d2cea9882b6bd7000b
+  evidence_table_sha256: c182cf69adf1f223f3b2443fc8bf26f54efcd969ac894b3b770236dc5c6242b4
   rows:
     - claim_area: context_budget_public_results
       source: evidence/token-saving-public-results.md
