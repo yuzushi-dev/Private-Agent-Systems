@@ -3,7 +3,7 @@
 Supplemental material for *Private Agent Systems* by Daniele Verì: a manual for
 designing private, observable, and governed AI agent systems.
 
-[Book](#book) • [Companion repositories](#companion-repositories) • [New chapter](#new-chapter) • [Contents](#contents) • [Repository structure](#repository-structure) • [Errata](#errata) • [Source updates](#source-updates) • [Contributing](#contributing) • [License](#license)
+[Book](#book) • [Companion repositories](#companion-repositories) • [Supplemental chapters](#supplemental-chapters) • [Contents](#contents) • [Repository structure](#repository-structure) • [Errata](#errata) • [Source updates](#source-updates) • [Contributing](#contributing) • [License](#license)
 
 ---
 
@@ -46,7 +46,7 @@ The two first-party case studies from the book are open source:
 
 ---
 
-## New chapter
+## Supplemental chapters
 
 **[Building a Governed LLM Wiki as a Second Brain](chapters/building-a-governed-llm-wiki.md)**
 is a practical guide to maintaining a local, source-linked knowledge base with
@@ -56,6 +56,12 @@ and end-to-end acceptance tests.
 
 The accompanying [`second-brain-starter/`](second-brain-starter/) directory is
 a portable vault skeleton with matching `CLAUDE.md` and `AGENTS.md` entry files.
+
+**[Governing Context Budgets in Private Agent Systems](chapters/governing-context-budgets.md)**
+shows how to treat context budget as a runtime governance surface. It covers
+evidence classes for token-saving claims, dated local audit results, tool
+selection by purpose, trace requirements, approval-policy implications, and the
+limits of prompt-token estimates.
 
 ---
 
@@ -85,7 +91,8 @@ The print book, ebook, and Kindle edition may refer readers here when a resource
 ├── assets/
 │   └── cover.jpg          Book cover.
 ├── chapters/
-│   └── building-a-governed-llm-wiki.md
+│   ├── building-a-governed-llm-wiki.md
+│   └── governing-context-budgets.md
 ├── second-brain-starter/  Portable Claude Code and Codex vault skeleton.
 └── templates/             Fill-in operational artifacts from Appendix B (CC0).
     ├── README.md          Index of all templates, mapped to their book chapters.

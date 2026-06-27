@@ -126,6 +126,37 @@ supplemental_chapter_register:
       action: support_bounded_context_and_memory_tiers_without_claiming_llm_wiki_superiority
 ```
 
+### 2026-06-26 governed context budget chapter
+
+The following rows support the supplemental chapter
+[`Governing Context Budgets in Private Agent Systems`](chapters/governing-context-budgets.md).
+The audit rows are local workflow measurements, not provider invoices.
+
+```yaml
+supplemental_chapter_register:
+  chapter: governing_context_budgets
+  checked_on: "2026-06-26"
+  rows:
+    - claim_area: context_budget_public_results
+      source: marketing/token-saving-public-results.md
+      action: use_sanitized_public_table_only
+    - claim_area: shell_output_filtering
+      source: tools/token_saving_audit.py
+      action: report_as_instrument_reported_runtime_snapshot
+    - claim_area: context_masking
+      source: tools/token_saving_audit.py
+      action: report_as_instrument_reported_runtime_snapshot
+    - claim_area: progressive_skill_loading
+      source: tools/token_saving_audit.py
+      action: report_as_static_footprint_avoided_not_provider_invoice
+    - claim_area: memory_search_filter_fetch
+      source: tools/claude_mem_ab_benchmark.py
+      action: label_as_synthetic_workflow_benchmark_until_real_store_has_data
+    - claim_area: codebase_graph_query_savings
+      source: tools/codebase_memory_mcp_benchmark.py
+      action: label_as_query_time_orientation_saving_not_end_to_end_task_success
+```
+
 <!-- Example:
 ### 2026-XX-XX owasp_llm_top_10
 Source moved / version changed. New link: ... . Impact on the book: ... .
