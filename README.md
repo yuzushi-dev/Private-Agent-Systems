@@ -54,8 +54,9 @@ Claude Code and Codex. It covers the knowledge lifecycle, operational memory,
 filesystem MCP wiring, provenance, corrections, concurrent writes, security,
 and end-to-end acceptance tests.
 
-The accompanying [`second-brain-starter/`](second-brain-starter/) directory is
-a portable vault skeleton with matching `CLAUDE.md` and `AGENTS.md` entry files.
+The accompanying [`starter-kit/`](starter-kit/) directory is a portable
+second-brain starter with matching `CLAUDE.md`, `AGENTS.md`, `00-system/`,
+source folders, wiki folders, and client configuration files.
 
 **[Governing Context Budgets in Private Agent Systems](chapters/governing-context-budgets.md)**
 shows how to treat context budget as a runtime governance surface. It covers
@@ -72,7 +73,7 @@ This repository is the stable place for material that may change after publicati
 - [`templates/`](templates/): fill-in versions of the reusable artifacts from Appendix B (route cards, eval cases, data flow, policy gates, and more)
 - [`chapters/`](chapters/): supplemental chapters published after the first edition
 - [`evidence/`](evidence/): sanitized public evidence tables referenced by supplemental chapters
-- [`second-brain-starter/`](second-brain-starter/): runnable companion files for the governed LLM Wiki chapter
+- [`starter-kit/`](starter-kit/): runnable second-brain vault skeleton for the governed LLM Wiki chapter
 - [`source-register.md`](source-register.md): the dated source register from Appendix B, kept current here as sources change
 - Companion links for Amber and Relic (above)
 - Errata and clarifications (added as they are reported)
@@ -96,7 +97,7 @@ The print book, ebook, and Kindle edition may refer readers here when a resource
 │   └── governing-context-budgets.md
 ├── evidence/
 │   └── token-saving-public-results.md
-├── second-brain-starter/  Portable Claude Code and Codex vault skeleton.
+├── starter-kit/           Portable Claude Code and Codex second-brain skeleton.
 └── templates/             Fill-in operational artifacts from Appendix B (CC0).
     ├── README.md          Index of all templates, mapped to their book chapters.
     ├── LICENSE            CC0 1.0 dedication for the templates + source register.
@@ -153,7 +154,7 @@ Please do not open pull requests that reproduce or redistribute the book text.
 ## License
 
 The fill-in templates in [`templates/`](templates/), the portable files in
-[`second-brain-starter/`](second-brain-starter/), and
+[`starter-kit/`](starter-kit/), and
 [`source-register.md`](source-register.md) are dedicated to the public domain
 under **CC0 1.0** (see [`templates/LICENSE`](templates/LICENSE)). Copy, modify,
 and use them freely, including commercially, with no attribution required.

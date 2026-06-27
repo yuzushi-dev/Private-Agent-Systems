@@ -5,11 +5,11 @@ This repository contains two kinds of material under two different terms.
 
 1. Public-domain material (CC0 1.0)
 -----------------------------------
-The fill-in templates in `templates/`, the portable files in
-`second-brain-starter/`, and the file `source-register.md` are dedicated to the
-public domain under Creative Commons CC0 1.0 Universal. You may copy, modify,
-distribute, and use them, including commercially, with no attribution required.
-The full dedication text is in `templates/LICENSE`.
+The fill-in templates in `templates/`, the portable files in `starter-kit/`, and
+the file `source-register.md` are dedicated to the public domain under Creative
+Commons CC0 1.0 Universal. You may copy, modify, distribute, and use them,
+including commercially, with no attribution required. The full dedication text
+is in `templates/LICENSE`.
 
 2. Reserved material (all rights reserved)
 ------------------------------------------
