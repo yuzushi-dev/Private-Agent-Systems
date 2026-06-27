@@ -159,8 +159,3 @@ supplemental_chapter_register:
       source: evidence/token-saving-public-results.md
       action: label_as_query_time_orientation_saving_not_end_to_end_task_success
 ```
-
-<!-- Example:
-### 2026-XX-XX owasp_llm_top_10
-Source moved / version changed. New link: ... . Impact on the book: ... .
--->

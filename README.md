@@ -28,7 +28,6 @@ the architecture in concrete systems.
 
 - **English edition (canonical):** *Private Agent Systems*: first edition
 - **Italian edition:** *Sistemi agentici privati*
-- **Where to buy:** <!-- TODO: add the Amazon/KDP purchase link and edition/ASIN -->
 
 *Daniele Verì builds private, observable AI systems, where cognitive science meets
 engineering. He is the author of Amber (governable Hybrid GraphRAG) and Relic
@@ -98,6 +97,8 @@ The print book, ebook, and Kindle edition may refer readers here when a resource
 ├── evidence/
 │   └── token-saving-public-results.md
 ├── starter-kit/           Portable Claude Code and Codex second-brain skeleton.
+├── tests/                 Lightweight checks for public evidence artifacts.
+├── tools/                 Utility scripts for reproducible evidence generation.
 └── templates/             Fill-in operational artifacts from Appendix B (CC0).
     ├── README.md          Index of all templates, mapped to their book chapters.
     ├── LICENSE            CC0 1.0 dedication for the templates + source register.
