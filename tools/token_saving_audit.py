@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generate a local token-saving audit for Claude/Codex workflows.
 
-The report intentionally excludes one local token-saving tool. It uses only:
+The report intentionally excludes private runtime components. It uses only:
 - RTK aggregate output, when `rtk gain` is available.
 - Claude Context Mode stats JSON files.
 - Static instruction/skill/plugin footprint from local files.
@@ -443,9 +443,9 @@ def write_markdown(path: Path, audit: Audit, rows: list[dict[str, Any]], include
 
 Generated: {date.today().isoformat()}
 
-This audit excludes one local token-saving tool. It separates runtime-reported savings from
-static context footprint. The static token counts use a chars/4 estimate and
-should not be treated as provider billing records.
+This audit excludes private runtime components. It separates runtime-reported savings
+from static context footprint. The static token counts use a chars/4 estimate
+and should not be treated as provider billing records.
 
 ## Summary
 
@@ -547,7 +547,7 @@ only until paired A/B runs show task-level saving.
 - Static skill counts are estimated from local file text, not tokenizer-specific
   billing counters.
 - A/B task verification is still required before claiming cost per accepted task.
-- One local token-saving tool is intentionally excluded from this audit.
+- Local-only tooling is intentionally excluded from this audit.
 """
     path.write_text(text)
 

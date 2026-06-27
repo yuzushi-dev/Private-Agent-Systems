@@ -130,7 +130,7 @@ supplemental_chapter_register:
 
 The following rows support the supplemental chapter
 [`Governing Context Budgets in Private Agent Systems`](chapters/governing-context-budgets.md).
-The audit rows are local workflow measurements, not provider invoices.
+The audit rows are sanitized task measurements, not provider invoices.
 
 ```yaml
 supplemental_chapter_register:
@@ -141,19 +141,19 @@ supplemental_chapter_register:
       source: marketing/token-saving-public-results.md
       action: use_sanitized_public_table_only
     - claim_area: shell_output_filtering
-      source: tools/token_saving_audit.py
+      source: marketing/token-saving-public-results.md
       action: report_as_instrument_reported_runtime_snapshot
     - claim_area: context_masking
-      source: tools/token_saving_audit.py
+      source: marketing/token-saving-public-results.md
       action: report_as_instrument_reported_runtime_snapshot
     - claim_area: progressive_skill_loading
-      source: tools/token_saving_audit.py
+      source: marketing/token-saving-public-results.md
       action: report_as_static_footprint_avoided_not_provider_invoice
-    - claim_area: memory_search_filter_fetch
-      source: tools/claude_mem_ab_benchmark.py
-      action: label_as_synthetic_workflow_benchmark_until_real_store_has_data
-    - claim_area: codebase_graph_query_savings
-      source: tools/codebase_memory_mcp_benchmark.py
+    - claim_area: memory_retrieval_savings
+      source: marketing/token-saving-public-results.md
+      action: label_as_task_level_memory_retrieval_measurement
+    - claim_area: source_orientation_savings
+      source: marketing/token-saving-public-results.md
       action: label_as_query_time_orientation_saving_not_end_to_end_task_success
 ```
 

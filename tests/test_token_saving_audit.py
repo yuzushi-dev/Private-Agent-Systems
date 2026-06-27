@@ -196,7 +196,7 @@ Tokens saved:      23.8M (63.7%)
         self.assertIn("Redacted by default", text)
         self.assertNotIn("/private/user", text)
         self.assertNotIn("private-plugin-name", text)
-        self.assertIn("one local token-saving tool", text)
+        self.assertIn("private runtime components", text)
 
 
 if __name__ == "__main__":

@@ -11,141 +11,361 @@ instructions, broad tool descriptions, and half-relevant code into tasks that
 needed a small slice of the system.
 
 Large context windows do not remove the runtime decision. A private agent still
-needs a harness that decides what belongs in context, why it belongs there, and
-which smaller path could have answered the same request.
+needs a harness that decides what enters context, why it enters, and which
+narrower path could have answered the same request.
 
-This chapter treats context budget as a governance surface. The question is not
-only "how many tokens did the stack save?" The better question is: which state,
-memory, source files, and tool outputs entered the model call, and can an
-operator inspect that choice after the fact?
+Context budget is a governance surface. The runtime must record which state,
+memory, source material, and tool outputs entered the model call. It must also
+record the acceptance check that made the smaller context path legitimate.
 
 ## Context belongs in the runtime contract
 
-Private agent systems already need runtime decisions around identity, data
+Private agent systems already make runtime decisions around identity, data
 classification, tool permissions, memory, retrieval, model routing,
 observability, and approval policy. Context budget belongs in that same
 contract.
 
 Each extra token can carry data the model did not need. A stale memory can bias
-the answer. A broad repository read can expose files outside the task. A plugin
+the answer. A broad source read can expose material outside the task. A plugin
 instruction can expand the agent's authority. A noisy shell command can bury
-the one line that showed the failure.
+the line that showed the failure.
 
-The harness should answer a small set of questions before the model call:
+The prompt builder should answer these questions before the model call:
 
-- Which state did the agent load?
-- Which tool output entered the prompt?
+- Which request and route produced this prompt?
+- Which data class did the route permit?
+- Which instructions were loaded because the task needed them?
 - Which memory item affected the run?
-- Which source files did the agent read?
-- Which narrower context path could have answered the same question?
+- Which source material entered the prompt?
+- Which tool output entered the prompt?
+- Which narrower context path was available?
+- Which acceptance check proves the smaller path did not change the result?
 
 Those questions turn context packing from an invisible convenience into an
 auditable runtime decision.
 
+The decision does not need a heavyweight policy engine. A private agent can
+start with a small set of route rules. A shell-heavy coding route may allow
+filtered command output and bounded file reads. A project-planning route may
+allow durable memory and current project notes. A research route may allow
+source documents with provenance. A write-capable route should demand a higher
+bar, because the prompt can carry instructions that change the system.
+
+Context policy should sit near the prompt builder rather than in an after-action
+spreadsheet. Once the model has seen a broad packet, the privacy and reliability
+decision has already happened. Logs can explain it later, but they cannot undo
+it.
+
+## Classify context before optimizing it
+
+Token-saving claims become useful only after you name what kind of context the
+tool removed. A private agent usually carries six classes of prompt material.
+
+| Context class | Examples | Main risk | Budget control |
+|---|---|---|---|
+| Task request | User prompt, route metadata, current objective | Ambiguous scope | Route-specific prompt template |
+| Standing instructions | `AGENTS.md`, `CLAUDE.md`, policy text, skills | Excess authority or stale procedure | Progressive loading |
+| Runtime state | Plan, current files, previous tool outputs | Lost boundaries between steps | Trace-linked state selection |
+| Memory | Prior decisions, preferences, project observations | Stale or sensitive recall | Search first, fetch selected detail |
+| Source material | Code, docs, notes, tickets, wiki pages | Overbroad disclosure | Narrow retrieval and claim locators |
+| Tool schemas | Available tools, parameters, descriptions | Capability expansion | Route-specific tool exposure |
+
+: Prompt material should have a data class and a budget rule
+
+The budget control differs by class. Instruction mass should not be loaded
+because it exists. It should be loaded because the task triggered it. Memory
+should not mean placing every prior observation in the prompt. It should mean
+retrieving the records that can affect the answer, under retention and privacy
+rules. Source material should enter through locators, summaries, snippets, or
+structured orientation steps before the model reads whole files.
+
+This classification also improves review. If an answer is wrong, the operator
+can ask whether the prompt lacked the right source, loaded the wrong memory, or
+gave the model an irrelevant tool. Without the class boundary, every failure
+turns into a vague complaint that the model "lost context."
+
+## Define route budgets
+
+A context budget becomes enforceable when it is attached to a route. The route
+describes the kind of task, the context classes it may use, the tool surface it
+may expose, and the acceptance check it must satisfy.
+
+A coding investigation route might allow project instructions, filtered shell
+output, source-code orientation, and bounded file reads. It may deny long-term
+personal memory unless the request asks for prior decisions. A documentation
+route might allow source excerpts, citation records, and style guidance. A
+deployment route might expose infrastructure tools but require approval before
+the model sees secrets, hostnames, or production logs.
+
+The budget does not need to be a single number. It should name the shape of the
+context packet:
+
+```yaml
+route_budget:
+  route: coding_investigation
+  allowed_context:
+    - project_instructions
+    - filtered_shell_output
+    - source_orientation
+    - bounded_file_reads
+  denied_by_default:
+    - unrelated_memory
+    - broad_private_notes
+    - write_tools
+  max_broad_reads_before_orientation: 0
+  acceptance_required: true
+```
+
+This kind of route gives the agent a working rule and gives the operator a
+review target. If the trace shows broad source reads before orientation, the
+route failed. If unrelated memory entered the prompt, the route failed. If the
+agent used a small packet and missed the answer, the acceptance check failed.
+
+Route budgets also help multiple agents share a system. Claude Code, Codex, and
+other clients can load different instruction formats, but they can still follow
+the same runtime contract: classify the request, choose a route, select context,
+record the decision, and verify the result.
+
+The route should not pretend that small context is always better. Some tasks
+need a whole document, a full diff, or a large source excerpt. The governed
+decision is not "minimize every prompt." The governed decision is "load the
+smallest packet that preserves the task result and respects the data class."
+
+## Walk one request through the budget
+
+Consider a routine coding request: "Why does the billing export fail after the
+last change?" An unguided agent may load recent chat context, project memory,
+test output, several source files, build logs, tool descriptions, and a broad
+search result. The answer may be correct, but the operator cannot easily tell
+which context mattered.
+
+A governed route handles the same request in stages.
+
+First, it classifies the task as a coding investigation. The route permits
+project instructions, filtered command output, source orientation, and bounded
+file reads. It does not load long-term personal memory, unrelated project notes,
+or write-capable tools at the start.
+
+Second, it asks for the smallest diagnostic packet. The shell output filter
+keeps the command, exit status, failing test, file, line, assertion, and a short
+surrounding excerpt. The model does not need the entire test log unless the
+filtered packet fails acceptance.
+
+Third, the source-code orientation layer identifies the likely files and
+symbols. The model sees names and locations before it reads implementation
+detail. If the orientation result points to the wrong area, the trace records
+the miss and the route escalates to a broader read.
+
+Fourth, the agent reads the bounded source excerpts and answers the question.
+The trace records which files entered the prompt, which tool outputs were used,
+and which context classes were denied. The acceptance check asks whether the
+answer identifies the failing behavior, the relevant source location, and the
+change needed to fix it.
+
+The same pattern works for documentation. A request to update a chapter should
+load the style reference, the target section, source locators, and the relevant
+public evidence table. It should not load every draft, every unrelated note, or
+private measurement material. The acceptance check asks whether the text
+preserves the claim, cites the right source, and avoids exposing private system
+details.
+
+This example is intentionally ordinary. Context governance earns its keep on
+ordinary tasks because those tasks repeat. A route that trims one noisy command
+does not matter much. A route that trims, records, and verifies hundreds of
+ordinary tasks changes the cost and auditability of the whole system.
+
 ## Separate the evidence classes
 
-Token-saving claims become misleading when they collapse different measurements
-into one number. Separate them before comparing tools.
+Measurements become misleading when they collapse different savings into one
+number. Separate the evidence before comparing tools.
 
 **Runtime-reported savings** come from a tool that records its own filtering
-during normal work. These numbers carry operational weight because the tool saw
-the commands or context operations as they happened.
+during normal work. These numbers carry operational evidence because the tool
+saw the commands or context operations as they happened.
 
 **Static footprint avoided** estimates instruction mass kept outside the
-always-on context. Skills, plugins, and project files can add large capability
-surface. Progressive loading saves prompt space when the agent loads only the
-skill a task triggers.
+always-on context. Skills, plugins, and project files can add a large
+capability surface. Progressive loading saves prompt space when the agent loads
+only the procedure a task triggers.
 
-**Task-level A/B measurements** compare two workflows on the same task. One
-path reads broad context. The other path searches, filters, or queries a
-structured index before fetching detail. These tests need an acceptance check,
-because a tiny prompt that misses the answer did not save useful context.
+**Task-level measurements** compare two execution paths on the same task. One
+path reads broad context. The other uses a structured route for the same
+question. This class needs an acceptance check, because a tiny prompt that
+misses the answer did not save useful context.
 
-This split makes claims inspectable. A plugin README can claim savings. A local
-audit can show what your stack saved on your tasks.
+These categories should not be averaged together. A shell filter, a context
+mask, a skill loader, a memory system, and a source-code graph each remove a
+different kind of prompt material. The right claim is not "this stack saves X
+tokens." The right claim is "this layer avoided this class of context for this
+kind of task, under this acceptance condition."
 
 ## Audit snapshot
 
-The companion repository includes a dated, sanitized context-budget audit. One
-local token-saving tool was excluded from the measurement set. The audit
-snapshot was generated on 2026-06-26 and covers shell-output filtering, context
-masking, progressive skill loading, external memory workflow tests, and
-codebase graph queries.
+The companion repository includes a dated, sanitized context-budget audit. The
+published measurement set covers reusable layers of the stack: shell-output
+filtering, context masking, progressive skill loading, memory retrieval, and
+source-code orientation. The audit snapshot was generated on 2026-06-26.
 
 RTK reported **23.8 million shell-output tokens saved**, a **63.70% reduction**,
 across **22,909 observed commands**. This number captures command-output
-filtering, not total agent cost. It changes as the local machine runs more
-commands, so treat it as a dated runtime snapshot.
+filtering, not total agent cost. It changes as more commands run, so treat it as
+a dated runtime snapshot.
 
-Claude Context Mode reported **1.10 million tokens saved** across **20
-session-stat files**, with a **50.95% average reduction**. It also kept
-**4,407,150 bytes** out of active context.
+Claude Context Mode reported **1.10 million tokens saved** across **20 recorded
+sessions**, with a **50.95% average reduction**. It also kept **4,407,150
+bytes** out of active context. This result belongs to active prompt pressure:
+large outputs can remain outside the model call until the agent needs them.
 
 Progressive skill loading kept a large instruction surface out of the always-on
-layer. The local Codex skill bodies measured about **151,339 estimated
-tokens**. The Claude skill bodies measured about **170,589 estimated tokens**.
-This is avoided always-on footprint, not a provider-billed runtime saving.
+layer. The Codex skill bodies measured about **151,339 estimated tokens**. The
+Claude skill bodies measured about **170,589 estimated tokens**. This is avoided
+always-on footprint, not a provider-billed runtime saving.
 
-`claude-mem` passed a workflow benchmark with a caveat. The installed real
-database had zero sessions, prompts, observations, and summaries at measurement
-time. The benchmark used a deterministic synthetic corpus shaped like memory
-observations. The baseline fetched full details for every search result. The
-optimized workflow showed compact search rows first, then fetched selected
-observation IDs. That path reduced the prompt from **6,762** estimated tokens
-to **2,606**, saving **4,156 tokens**, or **61.46%**, while retrieving all six
-relevant synthetic observations in the filtered set.
+`claude-mem` reduced one memory-retrieval task from **6,762** estimated tokens
+to **2,606**, saving **4,156 tokens**, or **61.46%**. The smaller path met the
+same acceptance check for the task.
 
-`codebase-memory-mcp` produced the clearest query-time result on one anonymous
-private repository. The tool indexed **125 files**, **637,489 bytes** of
-source, and built a graph with **1,450 nodes** and **6,055 edges**. The index
-database measured **7,471,104 bytes** and took **1.75 seconds** to build on the
-test machine.
+`codebase-memory-mcp` produced the clearest query-time result. For one
+feature-area orientation task, the broad prompt path would have used **44,917
+estimated tokens**. The structured orientation path used **704 estimated
+tokens**. That avoided **44,213 estimated prompt tokens**, a **98.43% reduction**
+for that step.
 
-The index used more disk than the source slice it indexed. The saving came at
-query time. For one feature-area orientation task, the baseline path would have
-loaded **44,917 estimated source-reading tokens**. A structured graph query
-returned the needed orientation in **704 estimated tokens**. That avoided
-**44,213 estimated prompt tokens**, a **98.43% reduction** for that step.
+For an architecture overview, the broad prompt path would have used **159,372
+estimated tokens**. The structured result used **1,050 estimated tokens**,
+avoiding **158,322 tokens**, a **99.34% reduction**.
 
-For an architecture overview, the baseline path would have loaded **159,372
-estimated tokens** from the indexed source surface. The structured result used
-**1,050 estimated tokens**, avoiding **158,322 tokens**, a **99.34% reduction**.
-
-These numbers do not prove end-to-end task success. They show that structured
-queries can answer orientation steps without dumping source files into the
-model.
+These numbers do not prove end-to-end task success. They show that a structured
+orientation step can answer the question without loading broad source context
+into the model.
 
 ## Choose the tool by context problem
 
 Different context-budget tools solve different problems. A governed stack can
 use several of them, but each should have a narrow job.
 
-| Tool or pattern | Best use | What it does not solve |
+| Runtime control | Best use | What it does not solve |
 |---|---|---|
 | RTK | Shell-heavy coding runs with noisy command output | Memory, source permissions, long-term state |
 | Claude Context Mode | Keeping large tool outputs outside active context until needed | Data classification, approval policy |
 | Progressive skill loading | Loading task-specific procedures instead of a full instruction library | Runtime proof that a task succeeded |
-| `claude-mem` | Search, filter, fetch workflow for long-term memory records | Retention policy or privacy review by itself |
-| `codebase-memory-mcp` | Source-code orientation before reading files | Disk footprint, index maintenance, final code review |
-| Audit scripts and public tables | Publishing or comparing context-budget claims | Acceptance without task-specific checks |
+| `claude-mem` | Long-term memory retrieval with selected detail fetches | Retention policy or privacy review by itself |
+| `codebase-memory-mcp` | Source-code orientation before reading files | Index maintenance, final code review |
 
 : Context-budget tools by primary purpose
 
 Use RTK when build logs, test output, search output, and command noise can
-dwarf the relevant line. Use Context Mode when large tool outputs or file reads
-should stay outside active context until the agent needs them. Use progressive
-skill loading when a procedure, domain convention, or safety check belongs in a
-task-specific file rather than in the always-on prompt.
+dwarf the relevant line. A shell command can produce thousands of lines while
+only one assertion failure matters. The shell filter belongs before the model
+call, not after the model has paid to read the noise.
+
+Use Claude Context Mode when a session produces large tool outputs or file
+reads that should stay outside active context until the agent asks for them.
+This is useful for long-running investigations where many observations are
+available but only a few need to enter the next prompt.
+
+Use progressive skill loading when a procedure, domain convention, or safety
+check belongs in a task-specific file rather than in the always-on prompt. A
+skills directory can be large. Loading all of it makes the prompt longer and
+can give the model irrelevant instructions. Loading the triggered skill keeps
+capability without turning every run into a manual dump.
 
 Use `claude-mem` for past decisions, project observations, and user or team
-preferences that need retrieval over time. The runtime should search compact
-rows first, select records under policy, and fetch details only for records
-that matter. Memory should not mean loading the past into every run.
+preferences that need retrieval over time. The runtime should retrieve selected
+detail under policy. Memory should not mean loading the past into every run.
 
 Use `codebase-memory-mcp` for source-code orientation. It fits questions like
 "where is this concept defined," "who calls it," and "which files matter." The
-graph index costs disk and indexing time. It pays off when the agent can inspect
-names, files, call paths, and architecture summaries before reading source.
+agent can inspect names, files, call paths, and architecture summaries before
+reading source.
+
+Use the public evidence table when publishing claims. The table is not a
+runtime control. It is a reporting artifact that separates result class, scope,
+acceptance, and limits.
+
+## Build a public evidence table
+
+Public context-budget claims need a table because prose blurs categories. The
+reader should see the layer, best use, evidence type, baseline, optimized path,
+saved tokens, reduction, acceptance scope, and publication status.
+
+The evidence type protects the claim. A runtime aggregate can show what a tool
+reported during ordinary operation. It cannot prove that every downstream task
+became cheaper. A static footprint estimate can show how much instruction mass
+stays outside the always-on prompt. It cannot prove that a task used fewer
+provider-billed tokens. A task-level same-task estimate can show that a
+structured path answered a narrow question with less prompt material. It cannot
+claim end-to-end task success unless the end-to-end task was actually tested.
+
+The acceptance column protects the reader. If a row says "orientation answer
+accepted," the reader knows the number applies to an orientation step. If a row
+says "memory retrieval acceptance check passed," the reader knows the number
+applies to selecting memory, not to the whole user request. This is the
+difference between a professional measurement and a marketing number.
+
+The table should also avoid revealing private infrastructure. A public claim
+does not need private system identifiers, internal measurement artifacts, trace
+payloads, or implementation files. It needs enough
+information to understand the measurement class and the limit of the claim.
+
+When updating a public evidence table, apply the same discipline used for a
+source register. Keep the original checked date. Add later changes as dated
+updates. If a tool changes its measurement method, record the change instead of
+silently replacing the old row. A context-budget number is temporal. It belongs
+to a stack, a date, a route, and an acceptance condition.
+
+## Design the acceptance check before the measurement
+
+A context-budget result matters only if the smaller context still supports the
+task. For private agents, the acceptance check should be written before the
+measurement, beside the route that selects context.
+
+For a shell-output task, acceptance may be: identify the failing test name, file,
+line, and assertion from filtered output. For a memory task, acceptance may be:
+retrieve the prior decision that changes the answer, cite its identifier, and
+avoid unrelated preferences. For a source-code orientation task, acceptance may
+be: identify the relevant symbols and files before reading implementation
+detail. For a documentation task, acceptance may be: preserve each cited claim
+and its source locator.
+
+Acceptance checks should stay narrow. Do not claim an end-to-end success result
+when the measurement covered only orientation. Do not claim provider billing
+savings when the measurement used estimated prompt tokens. Do not claim privacy
+improvement when the tool only removed noise. Each claim should name the task
+surface it actually measured.
+
+A compact acceptance record can look like this:
+
+```yaml
+context_decision:
+  request_class: source_code_orientation
+  context_class:
+    - standing_instructions
+    - source_orientation
+  broad_path_est_tokens: 44917
+  structured_path_est_tokens: 704
+  acceptance:
+    required_result: identify_feature_area_files_and_symbols
+    result_status: accepted
+  limits:
+    - not_end_to_end_task_success
+    - not_provider_invoice
+```
+
+This record does not need to expose private source material. It gives reviewers
+enough structure to understand the claim.
+
+Acceptance also needs a negative control. If the smaller path fails to identify
+the needed source, memory item, or failing command, the result should stay in
+the audit record. The failure tells the operator where the runtime needs better
+retrieval, a larger context packet, or a different route. A system that records
+only wins will teach the team to over-trim.
+
+For some tasks, the broad path is correct. Legal review, safety analysis, API
+contract migration, and release-note generation can require a full document or
+complete diff. The context-budget decision should record why the broader packet
+was necessary. Governance does not mean forcing the smallest prompt. It means
+making the prompt choice inspectable.
 
 ## Record context decisions in traces
 
@@ -155,50 +375,199 @@ retrieved sources, tool outputs, token counts, and acceptance result. If a user
 challenges the answer, the operator should see which memory item, file, or tool
 output influenced it.
 
-Context budget also belongs in approval policy. A repository query with bounded
-read access may need no human approval. A broad scan across private files may
-need a higher bar. A memory fetch that exposes user preference data needs a
-policy decision. A plugin that adds write tools needs a capability review.
+The trace should also show rejected context. If the route chose a summary over
+a full file, record that choice. If the memory search returned many candidates
+but only one entered the prompt, record the selection. If a tool schema was not
+available on the route, record the route boundary.
 
-Cost and governance meet at the prompt builder. The prompt builder decides
-whether the model sees a whole file, a snippet, a graph row, a memory summary,
-or nothing. That decision affects billing, latency, privacy, and answer
-quality.
+Trace review should answer four questions:
 
-## Run a local context-budget audit
+- Did the prompt contain enough information to solve the task?
+- Did it contain information outside the task boundary?
+- Did a narrower path exist and pass acceptance?
+- Did the route expose tools or memory the task did not need?
 
-The companion material gives you three small scripts:
+These questions connect cost, privacy, and reliability. A cheap prompt that
+misses the relevant source is not governed. A rich prompt that includes
+unneeded private memory is not governed either.
 
-- `tools/token_saving_audit.py` summarizes runtime-reported savings and static
-  footprint. Its Markdown output redacts local details by default.
-- `tools/claude_mem_ab_benchmark.py` tests a search, filter, fetch memory
-  workflow against a synthetic corpus when the real memory database is empty.
-- `tools/codebase_memory_mcp_benchmark.py` compares codebase graph outputs
-  against source-reading baselines for orientation steps.
+## Put context budget in approval policy
 
-Start with one workflow. Measure the broad-context baseline. Measure the
-structured path. Keep the acceptance test beside the token count. If the
-smaller context produces the right answer, you have a saving worth discussing.
+Approval policy usually focuses on side effects: writing files, running
+commands, calling external services, or changing infrastructure. Context
+selection deserves the same treatment, because the prompt is where data and
+authority meet the model.
 
-Do not publish raw generated reports unless you have reviewed them for local
-paths, repository names, database labels, and private tool names. Publish the
-sanitized table in `marketing/token-saving-public-results.md`, or regenerate a
-redacted report from the scripts.
+A narrow source-code query with bounded read access may need no human approval.
+A broad scan across sensitive material may need explicit approval. A memory
+fetch that exposes preferences or personnel data should follow retention and
+privacy rules. A plugin that adds write tools should require a capability
+review before the tool schema enters the route.
 
-## Limits of the numbers
+The policy should define escalation by data class, not by token count alone.
+Ten tokens can be sensitive. Ten thousand tokens can be harmless build noise.
+Budget accounting helps the operator see scale, but the data class decides the
+privacy boundary.
 
-These measurements are not provider invoices. RTK and Context Mode reported
-their own operational savings. Static skill counts use a chars-over-four
-estimate. The repository measurements estimate prompt tokens avoided during
-codebase orientation. The `claude-mem` result comes from a synthetic benchmark
-until the real memory store has enough data from normal work.
+## Review prompt changes like runtime changes
 
-The numbers remain useful because they separate claims. A tool can save tokens
-in one part of the run and add risk somewhere else. A memory system can reduce
-context load and require retention rules. A graph index can shrink prompts and
-consume disk. A plugin can add capability and expand the supply-chain boundary.
+A prompt builder is runtime code. Changing what it loads can alter privacy,
+cost, latency, and task quality even when no application code changed. Treat
+context selection changes the way you treat tool permissions or model routes.
 
-Private agent design needs that accounting. You do not get a governed system by
-buying a larger context window. You get one by deciding what enters the context,
-proving why it entered, and testing whether a smaller packet would have done the
-job.
+Review is needed when a route adds a new memory source, exposes a new tool,
+loads a new instruction file, changes retrieval ranking, or relaxes a source
+read boundary. The change may be small in code and large in behavior. A single
+extra instruction can give the model a new procedure. A single memory source can
+carry stale preference data into unrelated tasks. A single broad read rule can
+turn a narrow investigation into a private-data exposure.
+
+A route change review should include:
+
+- The context class added or removed.
+- The data class of the new material.
+- The task class that needs it.
+- The acceptance check that failed without it.
+- The expected token impact.
+- The trace field that will record the decision.
+
+This review prevents "helpful" prompt growth. Teams often add context after one
+bad answer and never remove it. A project instruction grows, a memory summary
+gets copied into the always-on prompt, a tool description becomes global, and
+the next hundred tasks pay for the workaround. Route review forces the team to
+ask whether the fix belongs in retrieval, a skill, a source locator, or an
+acceptance check instead.
+
+The rollback path should be explicit. If a route change increases cost or
+introduces stale context, the operator should be able to remove it without
+rewriting the rest of the agent. That means keeping context rules modular:
+global instructions stay small, route templates stay separate, skills carry
+task-specific procedure, and memory retrieval remains policy-bound.
+
+## Common failure modes
+
+**The agent loads the instruction library by default.** The model sees many
+procedures, examples, and constraints unrelated to the task. The run becomes
+longer and less predictable. Use progressive loading and record which skill
+triggered.
+
+**The memory layer behaves like a transcript dump.** Prior decisions, personal
+preferences, and stale observations enter the prompt together. Use search,
+selection, retention rules, and explicit fetches.
+
+**The source route starts with whole files.** The agent reads implementation
+detail before it knows which files matter. Use orientation steps, claim
+locators, and bounded source reads.
+
+**The shell route forwards raw command noise.** Test runs and build logs can
+dominate the prompt. Use output filtering that preserves the failing line,
+status, and relevant context.
+
+**The audit number loses its scope.** A task-level orientation saving becomes a
+claim about full task success. A static footprint estimate becomes a billing
+claim. Keep each number attached to its evidence class.
+
+**The trace records only what the model saw.** The operator cannot inspect
+which candidates were rejected or why a narrower route was chosen. Record the
+selection decision, not just the final packet.
+
+**The public artifact exposes the private measurement path.** A chapter or
+companion repository can publish too much by naming internal artifacts,
+describing private setup, or leaving reproduction details beside sanitized
+numbers. Keep public evidence and private measurement artifacts separate.
+
+**The route hides behind tool branding.** A team says "we use memory" or "we
+use a graph" without describing when the runtime selects those layers. Tool
+choice is not a policy. The policy is the route that decides when the tool
+contributes context.
+
+**The context budget ignores tool schemas.** The model may see tools it does
+not need for the task. A tool schema is prompt material and capability surface.
+Route-specific tool exposure belongs in the same budget as files and memory.
+
+## A staged adoption path
+
+Start with shell output. It is visible, noisy, and easy to measure. Put a
+filter in front of command output and record what it removed. Verify that
+failures still include the command, exit status, failing test, file, line, and
+short surrounding context.
+
+Next, move task-specific procedures out of the always-on prompt. Keep global
+instructions small. Load detailed procedures only when the task triggers them.
+Measure the static footprint avoided, and review whether the skill boundary is
+clear enough for another agent to use.
+
+Then add memory selection. Do not start by preserving everything. Define which
+observations are durable, which expire, and which should never enter a shared
+trace. Measure one retrieval task at a time, with acceptance tied to a decision
+or observation that changes the answer.
+
+After that, add source-code orientation. The goal is not to prevent file reads.
+The goal is to read the right files after the agent knows why they matter. Use
+structured orientation for names, call paths, and architecture before reading
+implementation detail.
+
+Finally, publish only sanitized results. Public claims should show the layer,
+best use, evidence type, scope, acceptance condition, and limits. Keep internal
+measurement artifacts under the access policy that matches their data class.
+
+This staged path also gives teams a review order. Shell filtering is usually
+low risk and easy to verify. Instruction loading affects every task and should
+be reviewed before adding a large skill library. Memory selection carries
+privacy and retention questions. Source-code orientation affects correctness
+and developer trust. Public evidence touches reputation, so it should be the
+last artifact produced, after the internal measurements have been reviewed.
+
+## Operating the system
+
+Context budget should become part of ordinary agent operations.
+
+During planning, the agent should name the route and context classes it expects
+to use. During execution, the runtime should record loaded instructions,
+retrieved memory, source locators, tool outputs, and token estimates. During
+review, the operator should compare the accepted result against the narrower
+path. During publication, the team should remove data that identifies private
+systems, projects, people, or local state.
+
+The operator should also review negative cases. When a smaller context path
+fails, keep the failure. It marks a boundary where the route needs more source
+material, a better retrieval index, or a stronger acceptance check. A governance
+system that records only savings will teach the team to over-trim.
+
+Context-budget review belongs near other release checks:
+
+- Did the claim name the evidence class?
+- Did the claim keep its task scope?
+- Did the acceptance check pass?
+- Did the public artifact omit private system identifiers?
+- Did the text avoid implying provider invoice savings where the number is an
+  estimate?
+- Did the result table explain which tool fits which problem?
+
+This review is not paperwork. It prevents a private agent chapter, article, or
+companion repository from publishing the very operational details the runtime
+was supposed to govern.
+
+## Sources and verification snapshot
+
+The companion source register records this chapter as a dated snapshot. The
+context-budget rows were checked on 2026-06-26 and cite the sanitized public
+result table as the publication source.
+
+The measurements should be read with these limits:
+
+- RTK and Claude Context Mode report operational savings from their own
+  instrumentation. Treat them as dated runtime snapshots.
+- Progressive skill loading reports static instruction footprint avoided. Treat
+  it as always-on prompt mass, not provider billing.
+- `claude-mem` reports a task-level memory retrieval measurement. Treat it as a
+  prompt-token estimate tied to an acceptance check.
+- `codebase-memory-mcp` reports source-code orientation savings. Treat it as a
+  query-time result, not end-to-end task success.
+- Bytes-over-four estimates are prompt-token approximations, not tokenizer or
+  invoice records.
+
+Private agent design needs this accounting. Larger context windows can carry
+more material, but they do not decide what belongs in the prompt. The runtime
+does. A governed agent records that decision, tests the smaller path, and keeps
+public claims attached to the evidence that supports them.
