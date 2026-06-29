@@ -272,9 +272,9 @@ call. Treat it as a dated runtime snapshot because the aggregate changes as more
 commands run.
 
 Claude Context Mode reported **1.10 million tokens saved** across **20 recorded
-sessions**, with a **50.95% average reduction**. It also kept **4,407,150
-bytes** out of active context. It measures active prompt pressure: large outputs
-can remain outside the model call until the agent needs them. The snapshot
+sessions**, with a **50.95% average reduction**. It measures active prompt
+pressure: large outputs can remain outside the model call until the agent needs
+them. The snapshot
 applies only to the recorded sessions and the interception paths active in that
 environment.
 

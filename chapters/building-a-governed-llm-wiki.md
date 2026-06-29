@@ -57,7 +57,7 @@ Use a separate contract for each artifact.
 | Wiki page | Maintain durable synthesis | Agent with human review | Verify claims, links, and provenance |
 | Operational note | Preserve project state or decisions | Human or agent | Review ownership, date, and status |
 
-: Knowledge and memory artifacts serve different contracts
+*Table: Knowledge and memory artifacts serve different contracts.*
 
 Codex documentation makes the distinction explicit: required team guidance
 belongs in `AGENTS.md` or checked-in documentation, while generated memories
@@ -587,11 +587,11 @@ cannot access sibling repositories or user credentials. Pin the reviewed server
 release instead of executing a moving package:
 
 ```bash
-claude mcp add --transport stdio --scope user obsidian-files -- \
+claude mcp add --transport stdio --scope user vault-files -- \
   npx -y @modelcontextprotocol/server-filesystem@2026.1.14 \
   /absolute/path/to/second-brain
 
-codex mcp add obsidian-files -- \
+codex mcp add vault-files -- \
   npx -y @modelcontextprotocol/server-filesystem@2026.1.14 \
   /absolute/path/to/second-brain
 ```
@@ -604,7 +604,7 @@ Codex stores MCP configuration in `~/.codex/config.toml`. On Windows, launch
 `npx` through `cmd /c` and escape the path:
 
 ```toml
-[mcp_servers.obsidian-files]
+[mcp_servers.vault-files]
 command = "cmd"
 args = [
   "/c",
@@ -623,7 +623,7 @@ an environment variable, but an unset variable causes parsing to fail:
 ```json
 {
   "mcpServers": {
-    "obsidian-files": {
+    "vault-files": {
       "type": "stdio",
       "command": "cmd",
       "args": [
@@ -679,7 +679,7 @@ from changes that can damage provenance or erase state.
 | Edit a project decision | Approval required | A decision has an accountable owner |
 | Write credentials or personal profiles | Blocked | The vault is not a secret or identity store |
 
-: Initial write authority for a personal second brain
+*Table: Initial write authority for a personal second brain.*
 
 The table is a policy baseline, not a capability claim about either client.
 Claude Code and Codex expose different permission controls, and their product
@@ -724,7 +724,7 @@ instruction availability, and data authorization. Passing one check says
 nothing about the other two.
 
 Start from a repository that does not contain the vault. Ask the client to list
-its MCP servers without reading vault files. Confirm that `obsidian-files`
+its MCP servers without reading vault files. Confirm that `vault-files`
 appears, then call `list_allowed_directories` before any other filesystem tool.
 Stop unless the returned list contains exactly the intended vault. A configured
 argument is insufficient because MCP roots may have replaced it. Then ask the
