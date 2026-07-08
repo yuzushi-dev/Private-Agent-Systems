@@ -9,7 +9,11 @@ designing private, observable, and governed AI agent systems.
 
 ## Book
 
-[![Private Agent Systems cover](assets/cover-readme.jpg)](assets/cover.jpg)
+<p align="center">
+  <a href="https://www.amazon.it/dp/B0H4RQMJG3">
+    <img src="https://m.media-amazon.com/images/I/416Yvhd0zVL.jpg" alt="Private Agent Systems cover" width="320">
+  </a>
+</p>
 
 **Private Agent Systems**
 *Architecture, privacy, observability, and governance for local, hybrid, and cloud AI agents*
@@ -93,8 +97,7 @@ The print book, ebook, and Kindle edition may refer readers here when a resource
 ├── CITATION.cff           How to cite the book.
 ├── source-register.md     Dated source register (Appendix B), updated as sources change.
 ├── assets/
-│   ├── cover.jpg          Full-size book cover.
-│   └── cover-readme.jpg   README cover thumbnail.
+│   └── cover.jpg          Full-size book cover.
 ├── chapters/
 │   ├── agentic-loops.md
 │   ├── building-a-governed-llm-wiki.md
