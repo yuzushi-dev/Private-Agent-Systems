@@ -159,3 +159,49 @@ supplemental_chapter_register:
       source: evidence/token-saving-public-results.md
       action: label_as_query_time_orientation_saving_not_end_to_end_task_success
 ```
+
+### 2026-06-28 agentic loops chapter
+
+The following rows support the supplemental chapter
+[`Agentic Loops in Private Agent Systems`](chapters/agentic-loops.md).
+
+```yaml
+supplemental_chapter_register:
+  chapter: agentic_loops
+  checked_on: "2026-06-28"
+  rows:
+    - claim_area: boris_cherny_role
+      source: https://www.anthropic.com/webinars/claude-code-for-financial-services-boris-cherny
+      status: primary_organizational_source
+      action: support_role_attribution
+    - claim_area: boris_cherny_loop_quote_and_practitioner_framing
+      sources:
+        - https://addyosmani.com/blog/loop-engineering/
+        - https://lucumr.pocoo.org/2026/6/23/the-coming-loop/
+      status: contemporary_secondary_sources
+      action: attribute_quote_through_practitioner_essays_primary_recording_not_in_snapshot
+    - claim_area: workflow_and_agent_distinction
+      source: https://www.anthropic.com/engineering/building-effective-agents
+      status: primary_practitioner_guidance
+      action: support_distinction_between_workflows_agents_checks_guardrails_and_tradeoffs
+    - claim_area: llm_application_security_risks
+      source: https://genai.owasp.org/llm-top-10/
+      status: risk_framework
+      action: anchor_prompt_injection_disclosure_supply_chain_and_excessive_agency_risks
+    - claim_area: generative_ai_risk_management
+      sources:
+        - https://www.nist.gov/itl/ai-risk-management-framework
+        - https://doi.org/10.6028/NIST.AI.600-1
+      status: risk_framework
+      action: anchor_risk_tolerance_lifecycle_legal_context_and_control_selection
+    - claim_area: agentic_ai_failure_modes
+      sources:
+        - https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/microsoft/bade/documents/products-and-services/en-us/security/Taxonomy-of-Failure-Modes-in-Agentic-AI-Systems-v2-0.pdf
+        - https://www.microsoft.com/en-us/security/blog/2026/06/04/updating-taxonomy-failure-modes-agentic-ai-systems-year-red-teaming-taught-us/
+      status: threat_modeling_reference
+      action: anchor_goal_hijacking_inter_agent_trust_session_context_mcp_plugin_abuse_and_hitl_bypass
+    - claim_area: loop_engineering_reference_implementation_and_vocabulary
+      source: https://github.com/cobusgreyling/loop-engineering
+      status: reference_implementation
+      action: treat_patterns_readiness_levels_state_budget_and_maker_checker_as_reference_vocabulary
+```

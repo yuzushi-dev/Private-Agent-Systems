@@ -707,20 +707,25 @@ use loops well. It needs contracts that a reviewer can inspect.
 
 ## Sources and verification snapshot
 
-This chapter uses a dated source snapshot rather than treating loop engineering
-as a settled standard.
+Verification date for loop-engineering sources: June 28, 2026. Re-check current
+source pages and security guidance before treating any pattern as operational
+policy.
 
-| Claim area | Source | Source status | Checked on | Use in this chapter |
-|---|---|---|---:|---|
-| Boris Cherny role | [Anthropic webinar page](https://www.anthropic.com/webinars/claude-code-for-financial-services-boris-cherny) naming Boris Cherny as Head of Claude Code | primary organizational source | 2026-06-28 | Verify the role attribution. |
-| Boris Cherny loop quote and practitioner framing | Addy Osmani, ["Loop Engineering"](https://addyosmani.com/blog/loop-engineering/); Armin Ronacher, ["The Coming Loop"](https://lucumr.pocoo.org/2026/6/23/the-coming-loop/) | contemporary secondary sources | 2026-06-28 | Attribute the quote and frame loop engineering as an emerging practitioner pattern. Primary recording or original post not included in this snapshot. |
-| Workflow and agent distinction | Anthropic, ["Building effective agents"](https://www.anthropic.com/engineering/building-effective-agents) | primary practitioner guidance | 2026-06-28 | Support the distinction between predefined workflows, more dynamic agents, checks, guardrails, and cost/error tradeoffs. |
-| LLM application security risks | [OWASP GenAI Security Project: Top 10 for LLM Applications 2025](https://genai.owasp.org/llm-top-10/) | risk framework | 2026-06-28 | Anchor prompt injection, sensitive information disclosure, supply chain, excessive agency, and related LLM application risks. |
-| Generative AI risk management | [NIST AI RMF](https://www.nist.gov/itl/ai-risk-management-framework) and [NIST AI 600-1](https://doi.org/10.6028/NIST.AI.600-1) | risk framework | 2026-06-28 | Anchor risk tolerance, lifecycle, legal/regulatory context, and control selection. |
-| Agentic AI failure modes | [Microsoft AI Red Team taxonomy v2.0](https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/microsoft/bade/documents/products-and-services/en-us/security/Taxonomy-of-Failure-Modes-in-Agentic-AI-Systems-v2-0.pdf) and [Microsoft Security Blog summary](https://www.microsoft.com/en-us/security/blog/2026/06/04/updating-taxonomy-failure-modes-agentic-ai-systems-year-red-teaming-taught-us/) | threat-modeling reference | 2026-06-28 | Anchor agentic supply chain compromise, goal hijacking, inter-agent trust escalation, session context contamination, MCP/plugin abuse, and human-in-the-loop bypass. |
-| Loop-engineering reference implementation and vocabulary | [`cobusgreyling/loop-engineering`](https://github.com/cobusgreyling/loop-engineering) public repository | reference implementation | 2026-06-28 | Treat patterns, readiness levels, state, budget, and maker/checker language as reference vocabulary, not as a required framework. |
+- [Anthropic webinar page naming Boris Cherny as Head of Claude Code](https://www.anthropic.com/webinars/claude-code-for-financial-services-boris-cherny)
+- Addy Osmani, ["Loop Engineering"](https://addyosmani.com/blog/loop-engineering/)
+- Armin Ronacher, ["The Coming Loop"](https://lucumr.pocoo.org/2026/6/23/the-coming-loop/)
+- Anthropic, ["Building effective agents"](https://www.anthropic.com/engineering/building-effective-agents)
+- [OWASP GenAI Security Project: Top 10 for LLM Applications 2025](https://genai.owasp.org/llm-top-10/)
+- [NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework)
+- [NIST AI 600-1, Generative AI Profile](https://doi.org/10.6028/NIST.AI.600-1)
+- [Microsoft AI Red Team taxonomy v2.0](https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/microsoft/bade/documents/products-and-services/en-us/security/Taxonomy-of-Failure-Modes-in-Agentic-AI-Systems-v2-0.pdf)
+- [Microsoft Security Blog summary of the agentic AI failure taxonomy update](https://www.microsoft.com/en-us/security/blog/2026/06/04/updating-taxonomy-failure-modes-agentic-ai-systems-year-red-teaming-taught-us/)
+- [`cobusgreyling/loop-engineering`](https://github.com/cobusgreyling/loop-engineering)
 
-*Table: Dated source snapshot for this chapter.*
+The practitioner sources frame loop engineering as an emerging pattern. This
+snapshot did not include the primary recording or original post for the Boris
+Cherny quote, so the chapter attributes the line through contemporary
+practitioner essays.
 
 The sources support the shape of the pattern. They do not prove that any
 specific loop improves quality, reduces cost, or should run unattended in a
