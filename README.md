@@ -10,7 +10,7 @@ designing private, observable, and governed AI agent systems.
 ## Book
 
 <p align="center">
-  <a href="https://www.amazon.it/dp/B0H4RQMJG3">
+  <a href="https://www.amazon.com/dp/B0H4RQMJG3">
     <img src="https://m.media-amazon.com/images/I/416Yvhd0zVL.jpg" alt="Private Agent Systems cover" width="320">
   </a>
 </p>
