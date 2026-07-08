@@ -15,6 +15,24 @@ designing private, observable, and governed AI agent systems.
   </a>
 </p>
 
+<p align="center">
+  <strong>Amazon:</strong>
+  <a href="https://www.amazon.com/dp/B0H4RQMJG3">US</a> |
+  <a href="https://www.amazon.co.uk/dp/B0H4RQMJG3">UK</a> |
+  <a href="https://www.amazon.ca/dp/B0H4RQMJG3">CA</a> |
+  <a href="https://www.amazon.com.au/dp/B0H4RQMJG3">AU</a> |
+  <a href="https://www.amazon.de/dp/B0H4RQMJG3">DE</a> |
+  <a href="https://www.amazon.fr/dp/B0H4RQMJG3">FR</a> |
+  <a href="https://www.amazon.es/dp/B0H4RQMJG3">ES</a> |
+  <a href="https://www.amazon.it/dp/B0H4RK4HY6">IT</a> |
+  <a href="https://www.amazon.nl/dp/B0H4RQMJG3">NL</a> |
+  <a href="https://www.amazon.se/dp/B0H4RQMJG3">SE</a> |
+  <a href="https://www.amazon.pl/dp/B0H4RQMJG3">PL</a> |
+  <a href="https://www.amazon.com.mx/dp/B0H4RQMJG3">MX</a> |
+  <a href="https://www.amazon.co.jp/dp/B0H4RQMJG3">JP</a> |
+  <a href="https://www.amazon.in/dp/B0H4RQMJG3">IN</a>
+</p>
+
 **Private Agent Systems**
 *Architecture, privacy, observability, and governance for local, hybrid, and cloud AI agents*
 Daniele Verì
