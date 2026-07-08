@@ -9,9 +9,7 @@ designing private, observable, and governed AI agent systems.
 
 ## Book
 
-<div align="center">
-  <img src="assets/cover.jpg" alt="Private Agent Systems cover" width="320">
-</div>
+[![Private Agent Systems cover](assets/cover-readme.jpg)](assets/cover.jpg)
 
 **Private Agent Systems**
 *Architecture, privacy, observability, and governance for local, hybrid, and cloud AI agents*
@@ -63,6 +61,11 @@ evidence classes for token-saving claims, dated local audit results, tool
 selection by purpose, trace requirements, approval-policy implications, and the
 limits of prompt-token estimates.
 
+**[Agentic Loops in Private Agent Systems](chapters/agentic-loops.md)**
+shows how to design recurring agent work as an operating contract. It covers
+loop admission tests, route cards, threat models, maker/checker separation,
+context budgets, traces, human gates, downgrade paths, and staged adoption.
+
 ---
 
 ## Contents
@@ -90,8 +93,10 @@ The print book, ebook, and Kindle edition may refer readers here when a resource
 ├── CITATION.cff           How to cite the book.
 ├── source-register.md     Dated source register (Appendix B), updated as sources change.
 ├── assets/
-│   └── cover.jpg          Book cover.
+│   ├── cover.jpg          Full-size book cover.
+│   └── cover-readme.jpg   README cover thumbnail.
 ├── chapters/
+│   ├── agentic-loops.md
 │   ├── building-a-governed-llm-wiki.md
 │   └── governing-context-budgets.md
 ├── evidence/
