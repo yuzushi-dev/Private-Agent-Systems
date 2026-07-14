@@ -88,6 +88,13 @@ shows how to design recurring agent work as an operating contract. It covers
 loop admission tests, route cards, threat models, maker/checker separation,
 context budgets, traces, human gates, downgrade paths, and staged adoption.
 
+**[How to Trust a Liar: Verifying Model Claims in Private Agent Systems](chapters/how-to-trust-a-liar.md)**
+shows how to build a runtime that treats every model claim as unverified until
+checked. It covers confabulation versus lying, maker/checker separation,
+repetition metrics, a source register that keeps verified, failed, and
+not-checked outcomes distinct, leakage denylists, and the human
+content-quality gate.
+
 ---
 
 ## Contents
@@ -119,7 +126,8 @@ The print book, ebook, and Kindle edition may refer readers here when a resource
 ├── chapters/
 │   ├── agentic-loops.md
 │   ├── building-a-governed-llm-wiki.md
-│   └── governing-context-budgets.md
+│   ├── governing-context-budgets.md
+│   └── how-to-trust-a-liar.md
 ├── evidence/
 │   └── token-saving-public-results.md
 ├── starter-kit/           Portable Claude Code and Codex second-brain skeleton.
