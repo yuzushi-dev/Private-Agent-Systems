@@ -1,0 +1,78 @@
+{
+  "protocol_version": "1.0",
+  "manifest": {
+    "review_id": "negative-duplicate-id",
+    "system_version": "4f9c2d1",
+    "route_sequence": ["W-1", "M-9"],
+    "requirement_catalog": [
+      {
+        "requirement_id": "REQ-CONSUME",
+        "source": "acceptance-case://AC-01",
+        "surface": "execution",
+        "target_ids": ["W-1->M-9"]
+      }
+    ]
+  },
+  "registers": [
+    {
+      "register_row_id": "EXEC-M9-W1",
+      "surface": "execution",
+      "target_id": "W-1->M-9",
+      "applicability": "APPLICABLE",
+      "predecessor": "W-1",
+      "consumer": "M-9",
+      "trigger": "worker_result_ready",
+      "state_in": "res-31",
+      "state_out": "answer_fragment",
+      "consumed_result_evidence": "trace://t-18/span-m9#input.res-31",
+      "failure_semantics": {
+        "timeout": {
+          "expected": "30s",
+          "observed": "not_triggered",
+          "evidence": "trace://t-18#timeout"
+        }
+      },
+      "join_owner": "research-coordinator",
+      "partial_result": "mark_degraded",
+      "required_authorization": "tenant_read",
+      "observed_authorization": "auth://D-18",
+      "telemetry_locator": "trace://t-18",
+      "owner": "research-platform",
+      "evidence_ids": ["EV-DUPLICATE"]
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_id": "EV-DUPLICATE",
+      "locator": "trace://one",
+      "origin": "fixture",
+      "collector": "fixture",
+      "integrity_control": "sha256-one",
+      "trust_class": "T3",
+      "limitations": "Negative fixture"
+    },
+    {
+      "evidence_id": "EV-DUPLICATE",
+      "locator": "trace://two",
+      "origin": "fixture",
+      "collector": "fixture",
+      "integrity_control": "sha256-two",
+      "trust_class": "T3",
+      "limitations": "Negative fixture"
+    }
+  ],
+  "checks": [
+    {
+      "check_id": "CHK-CONSUME-W1",
+      "requirement_id": "REQ-CONSUME",
+      "surface": "execution",
+      "requirement": "Merge consumes W-1 result",
+      "target_id": "W-1->M-9",
+      "register_row_ids": ["EXEC-M9-W1"],
+      "evidence_ids": ["EV-DUPLICATE"],
+      "status": "INCONCLUSIVE",
+      "rationale": "Duplicate evidence identifier prevents an unambiguous verdict",
+      "owner": "research-platform"
+    }
+  ]
+}

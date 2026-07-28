@@ -1,19 +1,24 @@
 CC0 1.0 Universal
 
-The templates in this directory, the portable files in `../starter-kit/`, and
-the file `../source-register.md` are dedicated to the public domain under
-Creative Commons CC0 1.0 Universal.
+The templates in this directory, the portable files in `../starter-kit/`, the
+utility scripts in `../tools/`, the checks in `../tests/`, the machine-readable
+artifacts in `../evidence/`, and the file `../source-register.md` are dedicated
+to the public domain under Creative Commons CC0 1.0 Universal. The one file
+carved out is `../evidence/token-saving-public-results.md`, which is written
+prose and remains reserved.
 
 To the extent possible under law, Daniele Verì has waived all copyright and
-related or neighboring rights to these template files. You can copy, modify,
-distribute, and use them, even for commercial purposes, all without asking
-permission and without attribution.
+related or neighboring rights to these files. You can copy, modify, distribute,
+and use them, even for commercial purposes, all without asking permission and
+without attribution.
 
 This dedication covers ONLY the fill-in template files in this directory, the
-portable second-brain starter files, and the source register. The prose of the
-book *Private Agent Systems*, supplemental chapter prose, and the explanatory
-text in the repository README files are NOT covered and remain the author's
-reserved work.
+portable second-brain starter files, the utility scripts, the checks, the
+machine-readable evidence artifacts, and the source register. The prose of the
+book *Private Agent Systems*, supplemental chapter prose, the explanatory text
+in the repository README files, and the written results commentary in
+`../evidence/token-saving-public-results.md` are NOT covered and remain the
+author's reserved work.
 
 Statement of Purpose
 

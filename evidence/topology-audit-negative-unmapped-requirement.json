@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.0",
+  "manifest": {
+    "review_id": "negative-unmapped-requirement",
+    "system_version": "4f9c2d1",
+    "route_sequence": [],
+    "requirement_catalog": [
+      {
+        "requirement_id": "REQ-UNMAPPED",
+        "source": "acceptance-case://AC-99",
+        "surface": "execution",
+        "target_ids": ["W-1->M-9"]
+      }
+    ]
+  },
+  "registers": [],
+  "evidence": [],
+  "checks": []
+}

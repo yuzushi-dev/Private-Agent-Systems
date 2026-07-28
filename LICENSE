@@ -5,11 +5,15 @@ This repository contains two kinds of material under two different terms.
 
 1. Public-domain material (CC0 1.0)
 -----------------------------------
-The fill-in templates in `templates/`, the portable files in `starter-kit/`, and
-the file `source-register.md` are dedicated to the public domain under Creative
-Commons CC0 1.0 Universal. You may copy, modify, distribute, and use them,
-including commercially, with no attribution required. The full dedication text
-is in `templates/LICENSE`.
+The fill-in templates in `templates/`, the portable files in `starter-kit/`, the
+utility scripts in `tools/`, the checks in `tests/`, the machine-readable
+artifacts in `evidence/`, and the file `source-register.md` are dedicated to the
+public domain under Creative Commons CC0 1.0 Universal. You may copy, modify,
+distribute, and use them, including commercially, with no attribution required.
+The full dedication text is in `templates/LICENSE`.
+
+One file is carved out: `evidence/token-saving-public-results.md` is written
+prose and stays reserved under section 2.
 
 2. Reserved material (all rights reserved)
 ------------------------------------------
@@ -18,6 +22,7 @@ only. This includes:
   - the prose of the book *Private Agent Systems* by Daniele Verì,
   - supplemental chapter prose in `chapters/`,
   - the explanatory text in the README files of this repository,
+  - the written results commentary in `evidence/token-saving-public-results.md`,
   - the cover image in `assets/`.
 
 You may not redistribute or republish the reserved material without permission.

@@ -1,0 +1,42 @@
+{
+  "protocol_version": "1.0",
+  "manifest": {
+    "review_id": "negative-invalid-status",
+    "system_version": "4f9c2d1",
+    "route_sequence": [],
+    "requirement_catalog": [
+      {
+        "requirement_id": "REQ-STATUS",
+        "source": "acceptance-case://AC-STATUS",
+        "surface": "execution",
+        "target_ids": ["W-1->M-9"]
+      }
+    ]
+  },
+  "registers": [
+    {
+      "register_row_id": "EXEC-M9-W1",
+      "surface": "execution",
+      "target_id": "W-1->M-9",
+      "applicability": "NOT_APPLICABLE",
+      "applicability_reason": "Fixture isolates status validation",
+      "owner": "research-platform",
+      "evidence_ids": []
+    }
+  ],
+  "evidence": [],
+  "checks": [
+    {
+      "check_id": "CHK-INVALID-STATUS",
+      "requirement_id": "REQ-STATUS",
+      "surface": "execution",
+      "requirement": "Status belongs to the protocol enum",
+      "target_id": "W-1->M-9",
+      "register_row_ids": ["EXEC-M9-W1"],
+      "evidence_ids": [],
+      "status": "PASS",
+      "rationale": "Negative fixture",
+      "owner": "research-platform"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "protocol_version": "1.0",
+  "manifest": {
+    "review_id": "negative-route-gap",
+    "system_version": "4f9c2d1",
+    "route_sequence": ["W-1", "M-9", "A-2"],
+    "requirement_catalog": [
+      {
+        "requirement_id": "REQ-CONSUME",
+        "source": "acceptance-case://AC-01",
+        "surface": "execution",
+        "target_ids": ["W-1->M-9"]
+      }
+    ]
+  },
+  "registers": [
+    {
+      "register_row_id": "EXEC-M9-W1",
+      "surface": "execution",
+      "target_id": "W-1->M-9",
+      "applicability": "APPLICABLE",
+      "predecessor": "W-1",
+      "consumer": "M-9",
+      "trigger": "worker_result_ready",
+      "state_in": "res-31",
+      "state_out": "answer_fragment",
+      "consumed_result_evidence": "trace://t-18/span-m9#input.res-31",
+      "failure_semantics": {
+        "timeout": {
+          "expected": "30s",
+          "observed": "not_triggered",
+          "evidence": "trace://t-18#timeout"
+        }
+      },
+      "join_owner": "research-coordinator",
+      "partial_result": "mark_degraded",
+      "required_authorization": "tenant_read",
+      "observed_authorization": "auth://D-18",
+      "telemetry_locator": "trace://t-18",
+      "owner": "research-platform",
+      "evidence_ids": ["EV-TRACE-18"]
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_id": "EV-TRACE-18",
+      "locator": "trace://t-18/span-m9#input.res-31",
+      "origin": "trace-backend",
+      "collector": "independent-collector",
+      "integrity_control": "sha256-manifest",
+      "trust_class": "T1",
+      "limitations": "The packet omits the M-9 to A-2 transition"
+    }
+  ],
+  "checks": [
+    {
+      "check_id": "CHK-CONSUME-W1",
+      "requirement_id": "REQ-CONSUME",
+      "surface": "execution",
+      "requirement": "Merge consumes W-1 result",
+      "target_id": "W-1->M-9",
+      "register_row_ids": ["EXEC-M9-W1"],
+      "evidence_ids": ["EV-TRACE-18"],
+      "status": "SUPPORTED",
+      "rationale": "Merge input binds res-31",
+      "owner": "research-platform"
+    }
+  ]
+}

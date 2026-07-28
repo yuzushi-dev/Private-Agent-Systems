@@ -1,0 +1,234 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/yuzushi-dev/Private-Agent-Systems/main/templates/topology-audit-schema.json",
+  "title": "Topology Review Protocol packet",
+  "type": "object",
+  "required": ["protocol_version", "manifest", "registers", "evidence", "checks"],
+  "properties": {
+    "protocol_version": {"const": "1.0"},
+    "manifest": {
+      "type": "object",
+      "required": ["review_id", "system_version", "route_sequence", "requirement_catalog"],
+      "properties": {
+        "review_id": {"type": "string", "minLength": 1},
+        "system_version": {"type": "string", "minLength": 1},
+        "route_sequence": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "requirement_catalog": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["requirement_id", "source", "surface", "target_ids"],
+            "properties": {
+              "requirement_id": {"type": "string", "minLength": 1},
+              "source": {"type": "string", "minLength": 1},
+              "surface": {"enum": ["knowledge", "execution", "lineage"]},
+              "target_ids": {
+                "type": "array",
+                "minItems": 1,
+                "items": {"type": "string", "minLength": 1}
+              }
+            }
+          }
+        }
+      }
+    },
+    "registers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["register_row_id", "surface", "target_id", "applicability", "owner", "evidence_ids"],
+        "properties": {
+          "register_row_id": {"type": "string", "minLength": 1},
+          "surface": {"enum": ["knowledge", "execution", "lineage"]},
+          "target_id": {"type": "string", "minLength": 1},
+          "applicability": {"enum": ["APPLICABLE", "NOT_APPLICABLE"]},
+          "applicability_reason": {"type": "string", "minLength": 1},
+          "owner": {"type": "string", "minLength": 1},
+          "evidence_ids": {
+            "type": "array",
+            "items": {"type": "string", "minLength": 1}
+          },
+          "predecessor": {"type": "string", "minLength": 1},
+          "consumer": {"type": "string", "minLength": 1},
+          "trigger": {"type": "string", "minLength": 1},
+          "state_in": {"type": "string", "minLength": 1},
+          "state_out": {"type": "string", "minLength": 1},
+          "consumed_result_evidence": {"type": "string", "minLength": 1},
+          "failure_semantics": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": {
+              "type": "object",
+              "required": ["expected", "observed", "evidence"],
+              "properties": {
+                "expected": {},
+                "observed": {},
+                "evidence": {"type": "string", "minLength": 1}
+              }
+            }
+          },
+          "join_owner": {"type": "string", "minLength": 1},
+          "partial_result": {"type": "string", "minLength": 1},
+          "required_authorization": {"type": "string", "minLength": 1},
+          "observed_authorization": {"type": "string", "minLength": 1},
+          "telemetry_locator": {"type": "string", "minLength": 1},
+          "source_type": {"type": "string", "minLength": 1},
+          "target_type": {"type": "string", "minLength": 1},
+          "relationship_meaning": {"type": "string", "minLength": 1},
+          "provenance_status": {"type": "string", "minLength": 1},
+          "checked_date": {"type": "string", "minLength": 1},
+          "validity_rule": {"type": "string", "minLength": 1},
+          "assertion_class": {"type": "string", "minLength": 1},
+          "authorization_scope": {"type": "string", "minLength": 1},
+          "merge_rule": {"type": "string", "minLength": 1},
+          "conflict_rule": {"type": "string", "minLength": 1},
+          "from_id": {"type": "string", "minLength": 1},
+          "to_id": {"type": "string", "minLength": 1},
+          "source_references": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"type": "string", "minLength": 1}
+          },
+          "execution_route": {"type": "string", "minLength": 1},
+          "authorization_decision": {"type": "string", "minLength": 1},
+          "outcome": {"type": "string", "minLength": 1},
+          "purpose": {"type": "string", "minLength": 1},
+          "data_classification": {"type": "string", "minLength": 1},
+          "access_rule": {"type": "string", "minLength": 1},
+          "retention_rule": {"type": "string", "minLength": 1},
+          "deletion_rule": {"type": "string", "minLength": 1},
+          "redaction_rule": {"type": "string", "minLength": 1}
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "surface": {"const": "execution"},
+                "applicability": {"const": "APPLICABLE"}
+              },
+              "required": ["surface", "applicability"]
+            },
+            "then": {
+              "required": [
+                "predecessor", "consumer", "trigger", "state_in", "state_out",
+                "consumed_result_evidence", "failure_semantics", "join_owner",
+                "partial_result", "required_authorization",
+                "observed_authorization", "telemetry_locator"
+              ],
+              "properties": {
+                "evidence_ids": {"minItems": 1}
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "surface": {"const": "knowledge"},
+                "applicability": {"const": "APPLICABLE"}
+              },
+              "required": ["surface", "applicability"]
+            },
+            "then": {
+              "required": [
+                "source_type", "target_type", "relationship_meaning",
+                "provenance_status", "checked_date", "validity_rule",
+                "assertion_class", "authorization_scope", "merge_rule",
+                "conflict_rule"
+              ],
+              "properties": {
+                "evidence_ids": {"minItems": 1}
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "surface": {"const": "lineage"},
+                "applicability": {"const": "APPLICABLE"}
+              },
+              "required": ["surface", "applicability"]
+            },
+            "then": {
+              "required": [
+                "from_id", "to_id", "source_references", "execution_route",
+                "authorization_decision", "outcome", "purpose",
+                "data_classification", "access_rule", "retention_rule",
+                "deletion_rule", "redaction_rule"
+              ],
+              "properties": {
+                "evidence_ids": {"minItems": 1}
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {"applicability": {"const": "NOT_APPLICABLE"}},
+              "required": ["applicability"]
+            },
+            "then": {"required": ["applicability_reason"]}
+          }
+        ]
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["evidence_id", "locator", "origin", "collector", "integrity_control", "trust_class", "limitations"],
+        "properties": {
+          "evidence_id": {"type": "string", "minLength": 1},
+          "locator": {"type": "string", "minLength": 1},
+          "origin": {"type": "string", "minLength": 1},
+          "collector": {"type": "string", "minLength": 1},
+          "integrity_control": {"type": "string", "minLength": 1},
+          "trust_class": {"enum": ["T1", "T2", "T3"]},
+          "limitations": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["check_id", "requirement_id", "surface", "requirement", "target_id", "register_row_ids", "evidence_ids", "status", "rationale", "owner"],
+        "properties": {
+          "check_id": {"type": "string", "minLength": 1},
+          "requirement_id": {"type": "string", "minLength": 1},
+          "surface": {"enum": ["knowledge", "execution", "lineage"]},
+          "requirement": {"type": "string", "minLength": 1},
+          "target_id": {"type": "string", "minLength": 1},
+          "status": {"enum": ["SUPPORTED", "PARTIAL", "UNSUPPORTED", "INCONCLUSIVE", "NOT_APPLICABLE"]},
+          "register_row_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"type": "string", "minLength": 1}
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": {"type": "string", "minLength": 1}
+          },
+          "rationale": {"type": "string", "minLength": 1},
+          "owner": {"type": "string", "minLength": 1}
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {"enum": ["SUPPORTED", "PARTIAL"]}
+              },
+              "required": ["status"]
+            },
+            "then": {
+              "properties": {
+                "evidence_ids": {"minItems": 1}
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

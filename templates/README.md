@@ -27,6 +27,7 @@ provider contract, region, and user group will change the final shape.
 | `provider-review-sheet.yaml` | Provider/endpoint data-handling review | Ch. 8: Privacy, Consent, and Data Governance |
 | `source-revalidation-row.yaml` | One re-checked source after publication | Ch. 8: Privacy, Consent, and Data Governance |
 | `incident-report.yaml` | Incident and postmortem record | Ch. 9: Security and Mitigations |
+| `topology-audit-schema.json` | Topology review packet: registers, evidence, declared checks | Supplemental: [From Loop Engineering to Graph Engineering](../chapters/from-loop-engineering-to-graph-engineering.md) |
 
 The source register lives one level up: [`../source-register.md`](../source-register.md).
 

@@ -95,6 +95,22 @@ repetition metrics, a source register that keeps verified, failed, and
 not-checked outcomes distinct, leakage denylists, and the human
 content-quality gate.
 
+**[From Loop Engineering to Graph Engineering: Agent Topology as a Review Surface](chapters/from-loop-engineering-to-graph-engineering.md)**
+treats agent topology as a set of contracts between bounded loops rather than a
+diagram. It covers the admission test for graph review, the three surfaces
+(knowledge relationships, execution transitions, decision lineage), declared
+checks with evidence and owners, consumed-result binding as the test for a real
+edge, failure and privacy review, and a worked example from Amber's graph write
+path.
+
+The accompanying packet is machine-checkable:
+[`templates/topology-audit-schema.json`](templates/topology-audit-schema.json)
+declares the registers, evidence entries, and checks;
+[`tools/topology_audit_validate.py`](tools/topology_audit_validate.py) runs the
+structural rules; and [`evidence/`](evidence/) holds one passing packet plus
+negative packets for missing fields, invalid status values, duplicate
+identifiers, dangling references, route gaps, and unmapped requirements.
+
 ---
 
 ## Contents
@@ -118,7 +134,7 @@ The print book, ebook, and Kindle edition may refer readers here when a resource
 ```
 .
 ├── README.md              This file.
-├── LICENSE                Licensing terms (CC0 for templates/register; book text reserved).
+├── LICENSE                Licensing terms (CC0 for code, templates, evidence, register; book text reserved).
 ├── CITATION.cff           How to cite the book.
 ├── source-register.md     Dated source register (Appendix B), updated as sources change.
 ├── assets/
@@ -126,16 +142,20 @@ The print book, ebook, and Kindle edition may refer readers here when a resource
 ├── chapters/
 │   ├── agentic-loops.md
 │   ├── building-a-governed-llm-wiki.md
+│   ├── from-loop-engineering-to-graph-engineering.md
 │   ├── governing-context-budgets.md
 │   └── how-to-trust-a-liar.md
-├── evidence/
-│   └── token-saving-public-results.md
+├── evidence/                            JSON packets are CC0; the results write-up is reserved.
+│   ├── token-saving-public-results.md
+│   ├── topology-audit-positive.json
+│   └── topology-audit-negative-*.json   Packets that must fail validation.
 ├── starter-kit/           Portable Claude Code and Codex second-brain skeleton.
-├── tests/                 Lightweight checks for public evidence artifacts.
-├── tools/                 Utility scripts for reproducible evidence generation.
+├── tests/                 Lightweight checks for public evidence artifacts (CC0).
+├── tools/                 Utility scripts for reproducible evidence generation (CC0).
 └── templates/             Fill-in operational artifacts from Appendix B (CC0).
     ├── README.md          Index of all templates, mapped to their book chapters.
-    ├── LICENSE            CC0 1.0 dedication for the templates + source register.
+    ├── LICENSE            CC0 1.0 dedication for the code, templates, evidence, and register.
+    ├── topology-audit-schema.json
     ├── route-card.yaml
     ├── data-class-table.yaml
     ├── data-flow.yaml
@@ -189,12 +209,15 @@ Please do not open pull requests that reproduce or redistribute the book text.
 ## License
 
 The fill-in templates in [`templates/`](templates/), the portable files in
-[`starter-kit/`](starter-kit/), and
-[`source-register.md`](source-register.md) are dedicated to the public domain
-under **CC0 1.0** (see [`templates/LICENSE`](templates/LICENSE)). Copy, modify,
-and use them freely, including commercially, with no attribution required.
+[`starter-kit/`](starter-kit/), the utility scripts in [`tools/`](tools/), the
+checks in [`tests/`](tests/), the machine-readable artifacts in
+[`evidence/`](evidence/), and [`source-register.md`](source-register.md) are
+dedicated to the public domain under **CC0 1.0** (see
+[`templates/LICENSE`](templates/LICENSE)). Copy, modify, and use them freely,
+including commercially, with no attribution required.
 
 Everything else, including the prose of the book *Private Agent Systems*, the
-supplemental chapter prose, the cover image, and the explanatory text in these
-README files, is the author's reserved work, provided for reading and reference
-only.
+supplemental chapter prose, the cover image, the written results commentary in
+[`evidence/token-saving-public-results.md`](evidence/token-saving-public-results.md),
+and the explanatory text in these README files, is the author's reserved work,
+provided for reading and reference only.

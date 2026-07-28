@@ -205,3 +205,55 @@ supplemental_chapter_register:
       status: reference_implementation
       action: treat_patterns_readiness_levels_state_budget_and_maker_checker_as_reference_vocabulary
 ```
+
+### 2026-07-25 graph engineering chapter
+
+The following rows support the supplemental chapter
+[`From Loop Engineering to Graph Engineering`](chapters/from-loop-engineering-to-graph-engineering.md).
+The code rows below use immutable commits so the inspected behavior remains
+reproducible after the public branches change.
+
+```yaml
+supplemental_chapter_register:
+  chapter: graph_engineering
+  checked_on: "2026-07-25"
+  rows:
+    - claim_area: graph_engineering_vocabulary
+      source: https://github.com/codejunkie99/graph-engineering/tree/cfacb56a05a31ba69bf84d0b8b00f5ce463127ef
+      secondary_source: https://github.com/codejunkie99/graph-engineering/blob/cfacb56a05a31ba69bf84d0b8b00f5ce463127ef/graph-engineering/references/task-graphs.md
+      snapshot_commit: "cfacb56a05a31ba69bf84d0b8b00f5ce463127ef"
+      status: practitioner_reference_not_audit_standard
+      action: treat_knowledge_versus_task_graph_split_and_fake_edge_test_as_lens_only
+    - claim_area: provenance_vocabulary
+      source: https://www.w3.org/TR/prov-dm/
+      status: w3c_recommendation
+      action: require_entity_activity_agent_generation_derivation_and_attribution_beyond_source_string
+    - claim_area: graph_constraint_validation
+      source: https://www.w3.org/TR/shacl/
+      status: w3c_recommendation
+      action: cite_shapes_and_conformance_reports_for_rdf_without_claiming_transfer_to_property_graphs
+    - claim_area: execution_trace_primitives
+      source: https://github.com/open-telemetry/opentelemetry-specification/blob/v1.55.0/specification/trace/api.md
+      spec_version: "1.55.0"
+      status: primary_specification
+      action: use_spans_links_events_status_as_telemetry_evidence_not_as_proof_of_result_consumption
+    - claim_area: multi_agent_scaling_effects
+      source: https://arxiv.org/abs/2512.08296v3
+      version_checked: "v3 (2026-04-08)"
+      status: preprint_versioned
+      action: cite_260_configurations_six_benchmarks_and_task_structure_dependence_not_universal_gain
+    - claim_area: lineage_privacy_risk
+      source: https://doi.org/10.6028/NIST.CSWP.01162020
+      status: risk_framework
+      action: apply_purpose_minimization_retention_and_deletion_to_knowledge_execution_and_lineage_records
+    - claim_area: amber_graph_write_path
+      source: https://github.com/yuzushi-dev/Amber
+      snapshot_commit: "701e7406beb9987cf3b73b826ebfc98c277f8941"
+      paths:
+        - src/core/graph/application/processor.py
+        - src/core/graph/application/writer.py
+        - src/core/ingestion/infrastructure/extraction/graph_extractor.py
+        - src/core/generation/application/prompts/entity_extraction.py
+      status: first_party_public_code_snapshot
+      action: limit_claims_to_async_chunk_gather_recorded_metrics_chunk_entity_mentions_relationship_merge_identity_tenant_created_at_weight_update_first_description_retention_and_absent_relationship_level_provenance
+```
